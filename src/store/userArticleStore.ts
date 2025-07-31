@@ -30,8 +30,3 @@ export const useUiStore = create<uiStore>((set,get)=>({
     toggleShowOnlyUsersWithBooks: () => set({ showOnlyUsersWithBooks: !get().showOnlyUsersWithBooks }),
 
 }));
-
-
-
-
-
