@@ -1,12 +1,10 @@
 import React from 'react';
+import { Button } from "./components/ui/button"
 
 function App() {
   return (
-    <div className="App">
-
-      <header className="App-header">
-      </header>
-      
+    <div className="p-10 bg-gray-900 min-h-screen text-white">
+      <Button>Funziona!</Button>
     </div>
   );
 }
