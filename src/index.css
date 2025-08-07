@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@tailwind utilities;
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -42,8 +45,13 @@
 }
 
 :root {
+  --primary-color: #4F51C0;
+  --active-primary-color: #00039c;
+  --line-color: #c4c4c4;
+
+
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #FAFAFA;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -115,7 +123,29 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground ;
   }
 }
+
+
+
+@layer utilities{
+  .text-primary-color {
+    color: var(--primary-color);
+  }
+
+  .dot-primary-color{
+    background-color: var(--primary-color);
+  }
+
+  .active-primary-color{
+    color: var(--active-primary-color);
+  }
+
+  .line-color{
+    background-color: var(--line-color);
+  }
+}
+
+
 
