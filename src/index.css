@@ -48,7 +48,7 @@
   --primary-color: #4F51C0;
   --active-primary-color: #00039c;
   --line-color: #c4c4c4;
-
+  --color-text: #FFFF;
 
   --radius: 0.625rem;
   --background: #FAFAFA;
@@ -138,12 +138,17 @@
     background-color: var(--primary-color);
   }
 
-  .active-primary-color{
-    color: var(--active-primary-color);
-  }
 
   .line-color{
     background-color: var(--line-color);
+  }
+
+  .color-text-filter{
+    color: var(--color-text);
+  }
+
+  .active-color-bg{
+    background-color: var(--active-primary-color);
   }
 }
 

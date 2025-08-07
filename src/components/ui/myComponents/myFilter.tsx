@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Button } from "../button"
+import { Button } from "../button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,25 +9,34 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../dropdown-menu"
+} from "../dropdown-menu";
 
 export function MyFilter() {
-  const [position, setPosition] = React.useState("bottom")
+  const [position, setPosition] = React.useState("bottom");
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Filter</Button>
+      <DropdownMenuTrigger
+        asChild
+        className="dot-primary-color color-text-filter hover:active-color-bg"
+      >
+        <Button variant="outline" className="hover:active-color-bg">
+          Filter
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+        <DropdownMenuLabel>Filter users</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="top">All</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="bottom">
+            Users with books
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="right">
+            Users without books
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
