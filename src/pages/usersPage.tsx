@@ -1,6 +1,7 @@
 import MyMenu from "../components/ui/myComponents/myMenu";
 import { MyInputUser } from "../components/ui/myComponents/myInput";
 import { MyFilter } from "../components/ui/myComponents/myFilter";
+import { MyCard } from "../components/ui/myComponents/myCard";
 
 export default function UsersPage() {
   return (
@@ -10,6 +11,10 @@ export default function UsersPage() {
       <MyInputUser />
       <div className="ml-10">
         <MyFilter />
+      </div>
+
+      <div>
+        <MyCard/>
       </div>
     </div>
   );

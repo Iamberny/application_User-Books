@@ -49,6 +49,7 @@
   --active-primary-color: #00039c;
   --line-color: #c4c4c4;
   --color-text: #FFFF;
+  --color-bg: #F2F3F8;
 
   --radius: 0.625rem;
   --background: #FAFAFA;
@@ -149,6 +150,10 @@
 
   .active-color-bg{
     background-color: var(--active-primary-color);
+  }
+
+  .color-bg{
+    background-color: var(--color-bg);
   }
 }
 

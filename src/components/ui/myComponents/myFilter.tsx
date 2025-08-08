@@ -15,12 +15,12 @@ export function MyFilter() {
   const [position, setPosition] = React.useState("bottom");
 
   return (
-    <DropdownMenu>
+    <DropdownMenu > 
       <DropdownMenuTrigger
         asChild
-        className="dot-primary-color color-text-filter hover:active-color-bg"
+        className="dot-primary-color hover:text-white"
       >
-        <Button variant="outline" className="hover:active-color-bg">
+        <Button variant="outline" className="hover:bg-indigo-800 text-white">
           Filter
         </Button>
       </DropdownMenuTrigger>
