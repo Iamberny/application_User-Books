@@ -1,5 +1,6 @@
 import UsersPage from "./pages/usersPage";
 import ArticlesPage from "./pages/articlesPage";
+import UserProfile from "./pages/userProfile";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Navigate to="/users" replace />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/books" element={<ArticlesPage />} />
+        <Route path="/user/:id" element={<UserProfile />} />
       </Routes>
     </Router>
   );

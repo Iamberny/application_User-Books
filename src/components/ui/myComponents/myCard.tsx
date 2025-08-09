@@ -1,5 +1,5 @@
-import { Button } from "../button";
 import { Card } from "../card";
+import { Link } from "react-router-dom";
 
 export function MyCard() {
   return (
@@ -22,12 +22,12 @@ export function MyCard() {
       </div>
 
       <div className=" text-center mt-2 px-6 justify-end">
-        <Button
-          variant="outline"
-          className="w-40 dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl"
+        <Link
+          to={`/user/1001`}
+          className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2"
         >
           Vedi profilo
-        </Button>
+        </Link>
       </div>
     </Card>
   );

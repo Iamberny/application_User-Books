@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 
+import { Filter } from "lucide-react";
+
 export function MyFilter() {
   const [position, setPosition] = React.useState("bottom");
 
@@ -20,11 +22,11 @@ export function MyFilter() {
         asChild
         className="dot-primary-color hover:text-white"
       >
-        <Button variant="outline" className="hover:bg-indigo-800 text-white">
-          Filter
+        <Button variant="outline" className="hover:bg-indigo-800 text-white cursor-pointer">
+         <Filter/> Filter
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-56 ml-5">
         <DropdownMenuLabel>Filter users</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
