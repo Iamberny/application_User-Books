@@ -50,6 +50,8 @@
   --line-color: #c4c4c4;
   --color-text: #FFFF;
   --color-bg: #F2F3F8;
+  --color-bg-delete: #E83D4D;
+
 
   --radius: 0.625rem;
   --background: #FAFAFA;
@@ -155,5 +157,6 @@
   .color-bg{
     background-color: var(--color-bg);
   }
+
 }
 
