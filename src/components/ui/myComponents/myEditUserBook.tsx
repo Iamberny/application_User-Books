@@ -59,9 +59,7 @@ export default function MyEditUser() {
               </button>
 
                 <MyDialogConfirmDeleteUser/>
-              <Button className="bg-red-500 hover:bg-red-600 text-white rounded-4xl px-4 py-2 w-full mt-80 cursor-pointer">
-                Delete user
-              </Button>
+             
             </div>
           </div>
         </div>

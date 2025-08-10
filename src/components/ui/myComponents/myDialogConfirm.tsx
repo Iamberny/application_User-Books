@@ -54,6 +54,7 @@ export function MyDialogConfirmDeleteUser() {
             </div>
           </DialogHeader>
 
+        <div className="">
           <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" className="cursor-pointer">
@@ -69,6 +70,7 @@ export function MyDialogConfirmDeleteUser() {
               </Button>
             
           </DialogFooter>
+        </div>
         </DialogContent>
       </form>
     </Dialog>
