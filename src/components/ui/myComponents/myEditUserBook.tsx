@@ -109,9 +109,9 @@ export default function MyEditUser() {
 
           {selectedMenu === "books" && (
             <div>
-              <h1 className="text-2xl font-semibold mb-4">Libri</h1>
+              <h1 className="text-2xl font-semibold mb-4">Books sold</h1>
               <p className="text-gray-500">
-                Nessun libro disponibile al momento.
+                No books sold.
               </p>
             </div>
           )}
