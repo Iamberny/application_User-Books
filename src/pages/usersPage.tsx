@@ -1,7 +1,7 @@
 import MyMenu from "../components/ui/myComponents/myMenu";
 import { MyInputUser } from "../components/ui/myComponents/myInput";
 import { MyFilter } from "../components/ui/myComponents/myFilter";
-import { MyCard } from "../components/ui/myComponents/myCard";
+import { MyCardUser } from "../components/ui/myComponents/myCard";
 import { MyCreateCardUser } from "../components/ui/myComponents/myCreateCardUserBook";
 
 
@@ -18,8 +18,9 @@ export default function UsersPage() {
       </div>
 
       <div>
-        <MyCard/>
+        <MyCardUser/>
       </div>
+
     </div>
   );
 }

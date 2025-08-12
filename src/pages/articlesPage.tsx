@@ -1,6 +1,7 @@
 import MyMenu from "../components/ui/myComponents/myMenu";
 import { MyInputArticles } from "../components/ui/myComponents/myInput";
 import { MyCreateCardArticle } from "../components/ui/myComponents/myCreateCardUserBook";
+import { MyCardBook } from "../components/ui/myComponents/myCard";
 
 export default function ArticlesPage() {
   return (
@@ -11,6 +12,10 @@ export default function ArticlesPage() {
 
       <div className="ml-460.5">
         <MyCreateCardArticle />
+      </div>
+
+      <div>
+        <MyCardBook/>
       </div>
     </div>
   );

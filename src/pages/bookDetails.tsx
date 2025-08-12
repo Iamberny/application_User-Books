@@ -1,15 +1,15 @@
-import MyEditUser from "../components/ui/myComponents/myEditUser";
+import MyEditBook from "../components/ui/myComponents/myEditBook";
 import MyMenu from "../components/ui/myComponents/myMenu";
 
 
-function UserProfile() {
+function BookDetails() {
   return (
     <div>
       <MyMenu />
       <h1 className="text-left text-2xl font-bold ml-15 -mt-10">Narrify</h1>
 
       <div className="mt-15 mx-auto ">
-        <MyEditUser/>
+        <MyEditBook/>
       </div>
 
 
@@ -17,4 +17,4 @@ function UserProfile() {
   );
 }
 
-export default UserProfile;
+export default BookDetails;

@@ -1,6 +1,7 @@
 import UsersPage from "./pages/usersPage";
 import ArticlesPage from "./pages/articlesPage";
 import UserProfile from "./pages/userProfile";
+import BookDetails from "./pages/bookDetails";
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,6 +17,7 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/books" element={<ArticlesPage />} />
         <Route path="/user/:id" element={<UserProfile />} />
+        <Route path="/book/:id" element={<BookDetails />} />
       </Routes>
     </Router>
   );
