@@ -5,6 +5,9 @@ import { Book } from "lucide-react";
 import { MyDialogConfirmDeleteBook } from "./myDialogConfirm";
 import { Label } from "../label";
 import Select from "react-select";
+import { SquarePen } from "lucide-react";
+import { Input } from "../input";
+import { Camera, Plus } from "lucide-react";
 
 const users = [
   {
@@ -53,28 +56,53 @@ export default function MyEditBook() {
   const [name, setName] = useState("Il bosco incantato");
   const [createdAt, setDate] = useState("01/01/1990");
   const [idBook, setId] = useState("2012");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(
+    "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
+  );
   const [soldBy, setSoldBy] = useState(null);
+
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center">
       <div className="flex gap-6 justify-center ">
         <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
           <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <img
-                src={
-                  image ||
-                  "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
-                }
-                alt="Profile"
-                className="w-28 h-28 object-cover shadow/30"
-              />
-              <input
+            <div className="flex flex-col items-center gap-2 mt-5">
+              <Label htmlFor="picture" className="cursor-pointer">
+                <div className="w-28 h-40 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
+                  <img
+                    src={image}
+                    alt="Preview"
+                    className="object-cover w-full h-full"
+                  />
+              
+                 
+                </div>
+              </Label>
+
+              <Input
+                id="picture"
                 type="file"
                 accept="image/*"
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="hidden"
+                onChange={handleFileChange}
               />
+               <div className="absolute bg-white p-1 rounded-full shadow mt-35 ml-22">
+                    <SquarePen className="text-primary-color w-5 h-5" />
+                  </div>
+
             </div>
 
             <h2 className="text-lg font-semibold text-center">{name}</h2>
@@ -185,12 +213,12 @@ export default function MyEditBook() {
                     control: (base, state) => ({
                       ...base,
                       width: "100%",
-                      border: "1px solid #D1D5DB", 
-                      borderRadius: "1rem", 
+                      border: "1px solid #D1D5DB",
+                      borderRadius: "1rem",
                       padding: "0.20rem 0.75rem",
                       boxShadow: state.isFocused ? "0 0 0 2px #6366F1" : "none",
                       "&:hover": {
-                        borderColor: "#6366F1", // hover border color
+                        borderColor: "#6366F1",
                       },
                     }),
                     placeholder: (base) => ({
@@ -236,8 +264,8 @@ export default function MyEditBook() {
 
           {selectedMenu === "books" && (
             <div>
-              <h1 className="text-2xl font-semibold mb-4">Books sold</h1>
-              <p className="text-gray-500">No books sold.</p>
+              <h1 className="text-2xl font-semibold mb-4">Sold by...</h1>
+              <p className="text-gray-500">Test</p>
             </div>
           )}
         </div>

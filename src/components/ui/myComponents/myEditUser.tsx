@@ -3,34 +3,89 @@ import { Button } from "../button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
 import { MyDialogConfirmDeleteUser } from "./myDialogConfirm";
+import { SquarePen } from "lucide-react";
+import { Camera, Plus } from "lucide-react";
+import { Input } from "../input";
+import { Label } from "../label";
+
+
+const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
+  const { data, innerRef, innerProps } = props;
+  return (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      className="flex items-center justify-between px-2 py-1 hover:bg-gray-100 cursor-pointer"
+    >
+      <div className="flex items-center gap-2">
+        <img
+          src={data.image}
+          alt={data.label}
+          className="w-8 h-8 rounded-full object-cover"
+        />
+        <span>{data.label}</span>
+      </div>
+      <span className="text-gray-500 text-sm">{data.id}</span>
+    </div>
+  );
+};
+
+
 
 export default function MyEditUser() {
   const [selectedMenu, setSelectedMenu] = useState("profile");
   const [name, setName] = useState("Valentina Pace");
   const [createdAt, setDate] = useState("01/01/1990");
-  const [idUser, setId] = useState("1001")
-  const [image, setImage] = useState(null);
+  const [idUser, setId] = useState("1001");
+  const [image, setImage] = useState(
+    "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
+  );
+
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center">
       <div className="flex gap-6 justify-center ">
         <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
           <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <img
-                src={
-                  image ||
-                  "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
-                }
-                alt="Profile"
-                className="w-28 h-28 rounded-full object-cover shadow/30"
-              />
-              <input
+           
+              <div className="flex flex-col items-center gap-2 mt-5">
+              <Label htmlFor="picture" className="cursor-pointer">
+                <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
+                  <img
+                    src={image}
+                    alt="Preview"
+                    className="object-cover w-full h-full"
+                  />
+              
+                 
+                </div>
+              </Label>
+
+              <Input
+                id="picture"
                 type="file"
                 accept="image/*"
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="hidden"
+                onChange={handleFileChange}
               />
+               <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
+                    <SquarePen className="text-primary-color w-4 h-4" />
+                  </div>
+
             </div>
+         
 
             <h2 className="text-lg font-semibold text-center">{name}</h2>
             <p className="text-sm text-muted-foreground">{createdAt}</p>
@@ -58,8 +113,7 @@ export default function MyEditUser() {
                 Books sold
               </button>
 
-                <MyDialogConfirmDeleteUser/>
-             
+              <MyDialogConfirmDeleteUser />
             </div>
           </div>
         </div>
@@ -89,7 +143,8 @@ export default function MyEditUser() {
                   Created at
                 </label>
                 <input
-                  type="text" disabled
+                  type="text"
+                  disabled
                   value={createdAt}
                   onChange={(e) => setDate(e.target.value)}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-400 cursor-not-allowed"
@@ -110,9 +165,7 @@ export default function MyEditUser() {
           {selectedMenu === "books" && (
             <div>
               <h1 className="text-2xl font-semibold mb-4">Books sold</h1>
-              <p className="text-gray-500">
-                No books sold.
-              </p>
+              <p className="text-gray-500">No books sold.</p>
             </div>
           )}
         </div>
