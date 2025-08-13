@@ -1,4 +1,3 @@
-import { Input } from "../input"
 import { Search } from "lucide-react";
 
 export function MyInputUser() {
