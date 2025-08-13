@@ -19,7 +19,7 @@ export function MyDialogConfirmDeleteUser() {
         <DialogTrigger asChild>
           <Button
             variant="outline"
-            className="bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-4xl px-4 py-2 w-full mt-80 cursor-pointer"
+            className="bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-4xl px-4 py-2 w-full mt-78.5 cursor-pointer"
           >
             Delete user
           </Button>
@@ -84,7 +84,7 @@ export function MyDialogConfirmDeleteBook() {
         <DialogTrigger asChild>
           <Button
             variant="outline"
-            className="bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-4xl px-4 py-2 w-full mt-100 cursor-pointer"
+            className="bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-4xl px-4 py-2 w-full mt-82 cursor-pointer"
           >
             Delete book
           </Button>
