@@ -5,7 +5,7 @@ export interface articleType {
   sellerId: string;
   description: string;
   createdAt: string;
-  bodyUrl: string;
+  buyUrl: string;
 }
 
 export type CreateArticlePayLoad = Omit<articleType,  'id' | 'createdAt'>

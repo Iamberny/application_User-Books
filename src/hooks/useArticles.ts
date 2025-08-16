@@ -3,11 +3,10 @@ import { Api } from "../api/api";
 import {
   CreateArticlePayLoad,
   UpdateArticlePayLoad,
-  articleType,
 } from "../types/articleType";
 
 export function useArticles() {
-  return useQuery<articleType>({
+  return useQuery({
     queryKey: ["articles"],
     queryFn: Api.getArticles,
   });

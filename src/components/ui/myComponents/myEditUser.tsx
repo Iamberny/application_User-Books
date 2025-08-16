@@ -31,7 +31,6 @@ const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
 };
 
 
-
 export default function MyEditUser() {
   const [selectedMenu, setSelectedMenu] = useState("profile");
   const [name, setName] = useState("Valentina Pace");

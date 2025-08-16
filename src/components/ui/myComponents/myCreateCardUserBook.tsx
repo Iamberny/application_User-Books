@@ -13,9 +13,32 @@ import { Label } from "../label";
 import { Input } from "../input";
 import { Camera, Plus } from "lucide-react";
 import Select from "react-select";
+import { useForm } from "react-hook-form";
+import { CreateUserPayLoad } from "../../../types/userType";
+import { CreateArticlePayLoad } from "../../../types/articleType";
+import { useCreateUser } from "../../../hooks/useUsers";
+import { useCreateArticle } from "../../../hooks/useArticles";
 
 export function MyCreateCardUser() {
+  const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();
+  const { mutate: createUser } = useCreateUser();
   const [preview, setPreview] = useState<string | null>(null);
+
+  const onSubmit = (data: CreateUserPayLoad) => {
+    createUser(
+      {
+        name: data.name,
+        avatar: preview ?? "",
+        birthdate: data.birthdate,
+      },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      }
+    );
+    setPreview(null);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,17 +53,17 @@ export function MyCreateCardUser() {
 
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer"
-          >
-            <Plus className="text-white" />
-          </Button>
-        </DialogTrigger>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer -ml-18"
+        >
+          <Plus className="text-white" />
+        </Button>
+      </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add an user</DialogTitle>
 
@@ -75,26 +98,41 @@ export function MyCreateCardUser() {
             <div className="grid gap-3">
               <Label htmlFor="name-1">Full name</Label>
               <input
-                id="name-1"
-                name="name"
-                placeholder="Enter your full name"  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                id="name"
+                {...register("name", { required: true })}
+                placeholder="Enter your full name"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 mt-2 mb-5">
+            <div className="grid gap-3">
+              <Label htmlFor="name-1">Birthdate</Label>
+              <input
+                id="birthdate"
+                {...register("birthdate", { required: true })}
+                placeholder="Enter your birthdate"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
               />
             </div>
           </div>
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="cursor-pointer">
+                Cancel
+              </Button>
             </DialogClose>
             <Button
               type="submit"
-              className="dot-primary-color hover:bg-indigo-800"
+              className="dot-primary-color hover:bg-indigo-800 cursor-pointer"
             >
               Add user
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }
@@ -144,6 +182,8 @@ const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
 export function MyCreateCardArticle() {
   const [preview, setPreview] = useState<string | null>(null);
   const [soldBy, setSoldBy] = useState(null);
+  const {register, handleSubmit, reset } = useForm<CreateArticlePayLoad>();
+  const {mutate: createArticle } = useCreateArticle();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -156,9 +196,27 @@ export function MyCreateCardArticle() {
     }
   };
 
+
+  const onSubmit = (data: CreateArticlePayLoad) => {
+    createArticle(
+      {
+        name: data.name,
+        description: data.description,
+        buyUrl: data.buyUrl,
+        picture: preview ?? "",
+        sellerId: "1",
+      },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      }
+    );
+  };
+
   return (
     <Dialog>
-      <form>
+      
         <DialogTrigger asChild>
           <Button
             variant="outline"
@@ -169,6 +227,7 @@ export function MyCreateCardArticle() {
         </DialogTrigger>
 
         <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add a book</DialogTitle>
 
@@ -202,34 +261,33 @@ export function MyCreateCardArticle() {
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="title1">Title</Label>
-              <input id="title1" name="title" placeholder="Enter book title" className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500" />
-            </div>
-
-            <div className="grid gap-3">
-              <Label htmlFor="description1">Description</Label>
               <input
-                id="description1"
-                name="description"
-                placeholder="Write a short description of the book" className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                id="title"
+                {...register("name", { required: true })}
+                placeholder="Enter book title"
+                className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
               />
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="author1">Author</Label>
+              <Label htmlFor="description">Description</Label>
               <input
-                id="author1"
-                name="author"
-                placeholder="Enter author's name" className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                id="description"
+                {...register("description", { required: true })}
+                placeholder="Write a short description of the book"
+                className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
               />
             </div>
+
 
             <div className="grid gap-3">
               <Label htmlFor="url1">Purchase link</Label>
               <input
                 type="url"
                 id="url-1"
-                name="url"
-                placeholder="Paste the purchase URL" className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                {...register("buyUrl", { required: true })}
+                placeholder="Paste the purchase URL"
+                className="w-full border border-gray-300 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
               />
             </div>
 
@@ -282,8 +340,9 @@ export function MyCreateCardArticle() {
               Add user
             </Button>
           </DialogFooter>
+          </form>
         </DialogContent>
-      </form>
+      
     </Dialog>
   );
 }

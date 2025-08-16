@@ -3,11 +3,10 @@ import { Api } from "../api/api";
 import {
   CreateUserPayLoad,
   UpdateUserPayLoad,
-  userType,
 } from "../types/userType";
 
 export function useUsers() {
-  return useQuery<userType>({
+  return useQuery({
     queryKey: ["users"],
     queryFn: Api.getUsers,
   });
