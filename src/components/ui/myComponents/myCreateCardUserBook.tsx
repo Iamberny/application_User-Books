@@ -16,8 +16,9 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { CreateUserPayLoad } from "../../../types/userType";
 import { CreateArticlePayLoad } from "../../../types/articleType";
-import { useCreateUser } from "../../../hooks/useUsers";
+import { useCreateUser, useUsers } from "../../../hooks/useUsers";
 import { useCreateArticle } from "../../../hooks/useArticles";
+
 
 export function MyCreateCardUser() {
   const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();
@@ -110,6 +111,7 @@ export function MyCreateCardUser() {
             <div className="grid gap-3">
               <Label htmlFor="name-1">Birthdate</Label>
               <input
+              type="date"
                 id="birthdate"
                 {...register("birthdate", { required: true })}
                 placeholder="Enter your birthdate"
@@ -137,26 +139,7 @@ export function MyCreateCardUser() {
   );
 }
 
-const users = [
-  {
-    value: "user1",
-    label: "User 1",
-    id: "ID001",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    value: "user2",
-    label: "User 2",
-    id: "ID002",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
-  },
-  {
-    value: "user3",
-    label: "User 3",
-    id: "ID003",
-    image: "https://randomuser.me/api/portraits/men/3.jpg",
-  },
-];
+
 
 const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
   const { data, innerRef, innerProps } = props;
@@ -181,9 +164,22 @@ const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
 
 export function MyCreateCardArticle() {
   const [preview, setPreview] = useState<string | null>(null);
-  const [soldBy, setSoldBy] = useState(null);
+  const [soldBy, setSoldBy] = useState<any>(null);
+
+  
   const {register, handleSubmit, reset } = useForm<CreateArticlePayLoad>();
   const {mutate: createArticle } = useCreateArticle();
+  
+  const { data: usersData, isLoading } = useUsers();
+
+  
+    const userOptions =
+    usersData?.map((user: { id: any; name: any; avatar: any; }) => ({
+      value: user.id,       
+      label: user.name,
+      id: user.id,
+      image: user.avatar,
+    })) || [];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -204,11 +200,13 @@ export function MyCreateCardArticle() {
         description: data.description,
         buyUrl: data.buyUrl,
         picture: preview ?? "",
-        sellerId: "1",
+        sellerId: soldBy?.value,
       },
       {
         onSuccess: () => {
           reset();
+           setSoldBy(null);          
+          setPreview(null);
         },
       }
     );
@@ -291,12 +289,14 @@ export function MyCreateCardArticle() {
               />
             </div>
 
-            <div className="grid gap-3">
+            <div className="grid gap-3 mb-5">
               <Label htmlFor="soldBy">Sold by</Label>
               <Select
                 id="soldBy"
-                options={users}
+                options={userOptions}         
+                isLoading={isLoading} 
                 placeholder="Choose user..."
+                menuPlacement="top" 
                 components={{ Option: CustomOption }}
                 onChange={(newValue) => setSoldBy(newValue)}
                 styles={{
@@ -304,8 +304,9 @@ export function MyCreateCardArticle() {
                     ...base,
                     width: "100%",
                     border: "1px solid #D1D5DB",
-                    borderRadius: "0.5rem",
+                    borderRadius: "1rem",
                     padding: "0.10rem 0.75rem",
+                     backgroundColor: "#F9FAFB",
                     boxShadow: state.isFocused ? "0 0 0 2px #6366F1" : "none",
                     "&:hover": {
                       borderColor: "#6366F1",
@@ -331,13 +332,13 @@ export function MyCreateCardArticle() {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="cursor-pointer">Cancel</Button>
             </DialogClose>
             <Button
               type="submit"
-              className="dot-primary-color hover:bg-indigo-800"
+              className="dot-primary-color hover:bg-indigo-800 cursor-pointer"
             >
-              Add user
+              Add book
             </Button>
           </DialogFooter>
           </form>

@@ -4,10 +4,10 @@ import { MyCardUser } from "./myCard";
 export function MyUserDashboard() {
   const { data: users, isLoading } = useUsers();
 
-  if (isLoading) return <p>Caricamento utenti...</p>;
+  if (isLoading) return <p>Loading users...</p>;
 
   return (
-    <div className="flex flex-wrap mt-6 gap-6 ml-8">
+    <div className="flex flex-wrap mt-6 gap-6 ml-8 mb-5">
       {users?.map((user: any) => (
         <MyCardUser key={user.id} user={user} />
       ))}

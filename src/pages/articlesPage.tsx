@@ -1,10 +1,11 @@
 import MyMenu from "../components/ui/myComponents/myMenu";
 import { MyInputArticles } from "../components/ui/myComponents/myInput";
 import { MyCreateCardArticle } from "../components/ui/myComponents/myCreateCardUserBook";
-import { MyCardBook } from "../components/ui/myComponents/myCard";
+import { MyArticleDashboard } from "../components/ui/myComponents/myArticleDashboard";
 
 export default function ArticlesPage() {
   return (
+    <>
     <div>
       <MyMenu />
       <h1 className="text-left text-2xl font-bold ml-15 -mt-10">Narrify</h1>
@@ -14,9 +15,12 @@ export default function ArticlesPage() {
         <MyCreateCardArticle />
       </div>
 
-      <div>
-        <MyCardBook/>
+      <div className="grid col-4">
+        <div>
+          <MyArticleDashboard />
+        </div>
       </div>
     </div>
+    </>
   );
 }

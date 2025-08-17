@@ -52,7 +52,7 @@ export const Api = {
   },
 
   createArticle: async(data: CreateArticlePayLoad) => {
-    const response = await fetch(`${BASE_URL}/users`, {
+    const response = await fetch(`${BASE_URL}/articles`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

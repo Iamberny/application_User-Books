@@ -9,6 +9,7 @@ import { Input } from "../input";
 import { Label } from "../label";
 
 
+
 const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
   const { data, innerRef, innerProps } = props;
   return (
@@ -131,6 +132,18 @@ export default function MyEditUser() {
                 </label>
                 <input
                   type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                  Birthdate
+                </label>
+                <input
+                  type="data"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
