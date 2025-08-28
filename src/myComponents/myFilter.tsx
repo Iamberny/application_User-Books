@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Button } from "../../button";
+import { Button } from "../components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../dropdown-menu";
+} from "../components/dropdown-menu";
 
 import { Filter } from "lucide-react";
 

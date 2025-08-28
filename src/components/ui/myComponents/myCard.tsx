@@ -1,6 +1,6 @@
 import { userType } from "../../../types/userType";
 import { articleType } from "../../../types/articleType";
-import { Card } from "@/components/card";
+import { Card } from "../../card";
 import { Link } from "react-router-dom";
 
 type UserProps = {

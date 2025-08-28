@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "../../button";
 import {
   Dialog,
   DialogClose,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/dialog";
+} from "../../dialog";
 import { useState } from "react";
 
 export function MyDialogConfirmDeleteUser() {

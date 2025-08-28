@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@/components/button";
+import { Button } from "../../button";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "@/components/dialog";
-import { Label } from "@/components/label";
-import { Input } from "@/components/input";
+} from "../../dialog";
+import { Label } from "../../label";
+import { Input } from "../../input";
 import { Camera, Plus } from "lucide-react";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
