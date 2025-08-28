@@ -4,7 +4,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuIndicator,
-} from "../navigation-menu";
+} from "@/components/navigation-menu";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../../lib/utils";
 import '../../../index.css';

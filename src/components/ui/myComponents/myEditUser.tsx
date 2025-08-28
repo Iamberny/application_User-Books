@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button } from "../button";
+import { Button } from "@/components/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
 import { MyDialogConfirmDeleteUser } from "./myDialogConfirm";
 import { SquarePen } from "lucide-react";
 import { Camera, Plus } from "lucide-react";
-import { Input } from "../input";
-import { Label } from "../label";
+import { Input } from "@/components/input";
+import { Label } from "@/components/label";
 
 
 

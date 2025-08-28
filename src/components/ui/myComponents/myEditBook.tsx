@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button } from "../button";
+import { Button } from "@/components/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
 import { MyDialogConfirmDeleteBook } from "./myDialogConfirm";
-import { Label } from "../label";
+import { Label } from "@/components/label";
 import Select from "react-select";
 import { SquarePen } from "lucide-react";
-import { Input } from "../input";
+import { Input } from "@/components/input";
 import { Camera, Plus } from "lucide-react";
 
 const users = [
