@@ -18,12 +18,13 @@ import { CreateUserPayLoad } from "../../../types/userType";
 import { CreateArticlePayLoad } from "../../../types/articleType";
 import { useCreateUser, useUsers } from "../../../hooks/useUsers";
 import { useCreateArticle } from "../../../hooks/useArticles";
-
+import { showUserAddedToast } from "./mySonner";
 
 export function MyCreateCardUser() {
   const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();
   const { mutate: createUser } = useCreateUser();
   const [preview, setPreview] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   const onSubmit = (data: CreateUserPayLoad) => {
     createUser(
@@ -35,6 +36,14 @@ export function MyCreateCardUser() {
       {
         onSuccess: () => {
           reset();
+          showUserAddedToast();
+          setOpen(false);
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 100);
         },
       }
     );
@@ -53,7 +62,7 @@ export function MyCreateCardUser() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -111,7 +120,7 @@ export function MyCreateCardUser() {
             <div className="grid gap-3">
               <Label htmlFor="name-1">Birthdate</Label>
               <input
-              type="date"
+                type="date"
                 id="birthdate"
                 {...register("birthdate", { required: true })}
                 placeholder="Enter your birthdate"
@@ -139,8 +148,6 @@ export function MyCreateCardUser() {
   );
 }
 
-
-
 const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
   const { data, innerRef, innerProps } = props;
   return (
@@ -166,16 +173,14 @@ export function MyCreateCardArticle() {
   const [preview, setPreview] = useState<string | null>(null);
   const [soldBy, setSoldBy] = useState<any>(null);
 
-  
-  const {register, handleSubmit, reset } = useForm<CreateArticlePayLoad>();
-  const {mutate: createArticle } = useCreateArticle();
-  
+  const { register, handleSubmit, reset } = useForm<CreateArticlePayLoad>();
+  const { mutate: createArticle } = useCreateArticle();
+
   const { data: usersData, isLoading } = useUsers();
 
-  
-    const userOptions =
-    usersData?.map((user: { id: any; name: any; avatar: any; }) => ({
-      value: user.id,       
+  const userOptions =
+    usersData?.map((user: { id: any; name: any; avatar: any }) => ({
+      value: user.id,
       label: user.name,
       id: user.id,
       image: user.avatar,
@@ -192,7 +197,6 @@ export function MyCreateCardArticle() {
     }
   };
 
-
   const onSubmit = (data: CreateArticlePayLoad) => {
     createArticle(
       {
@@ -205,7 +209,7 @@ export function MyCreateCardArticle() {
       {
         onSuccess: () => {
           reset();
-           setSoldBy(null);          
+          setSoldBy(null);
           setPreview(null);
         },
       }
@@ -214,18 +218,17 @@ export function MyCreateCardArticle() {
 
   return (
     <Dialog>
-      
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer"
-          >
-            <Plus className=" text-white " />
-          </Button>
-        </DialogTrigger>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer"
+        >
+          <Plus className=" text-white " />
+        </Button>
+      </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleSubmit(onSubmit)}>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add a book</DialogTitle>
 
@@ -277,7 +280,6 @@ export function MyCreateCardArticle() {
               />
             </div>
 
-
             <div className="grid gap-3">
               <Label htmlFor="url1">Purchase link</Label>
               <input
@@ -293,10 +295,10 @@ export function MyCreateCardArticle() {
               <Label htmlFor="soldBy">Sold by</Label>
               <Select
                 id="soldBy"
-                options={userOptions}         
-                isLoading={isLoading} 
+                options={userOptions}
+                isLoading={isLoading}
                 placeholder="Choose user..."
-                menuPlacement="top" 
+                menuPlacement="top"
                 components={{ Option: CustomOption }}
                 onChange={(newValue) => setSoldBy(newValue)}
                 styles={{
@@ -306,7 +308,7 @@ export function MyCreateCardArticle() {
                     border: "1px solid #D1D5DB",
                     borderRadius: "1rem",
                     padding: "0.10rem 0.75rem",
-                     backgroundColor: "#F9FAFB",
+                    backgroundColor: "#F9FAFB",
                     boxShadow: state.isFocused ? "0 0 0 2px #6366F1" : "none",
                     "&:hover": {
                       borderColor: "#6366F1",
@@ -332,7 +334,9 @@ export function MyCreateCardArticle() {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" className="cursor-pointer">Cancel</Button>
+              <Button variant="outline" className="cursor-pointer">
+                Cancel
+              </Button>
             </DialogClose>
             <Button
               type="submit"
@@ -341,9 +345,8 @@ export function MyCreateCardArticle() {
               Add book
             </Button>
           </DialogFooter>
-          </form>
-        </DialogContent>
-      
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }

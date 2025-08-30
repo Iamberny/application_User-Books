@@ -2,6 +2,7 @@ import UsersPage from "./pages/usersPage";
 import ArticlesPage from "./pages/articlesPage";
 import UserProfile from "./pages/userProfile";
 import BookDetails from "./pages/bookDetails";
+import { Toaster } from "./components/sonner";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,7 +12,10 @@ import {
 
 function App() {
   return (
+    
     <Router>
+      <Toaster position="bottom-right" />
+
       <Routes>
         <Route path="/" element={<Navigate to="/users" replace />} />
         <Route path="/users" element={<UsersPage />} />

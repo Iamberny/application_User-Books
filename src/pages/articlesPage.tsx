@@ -1,7 +1,7 @@
 import MyMenu from "../components/ui/myComponents/myMenu";
 import { MyInputArticles } from "../components/ui/myComponents/myInput";
 import { MyCreateCardArticle } from "../components/ui/myComponents/myCreateCardUserBook";
-import { MyArticleDashboard } from "../components/ui/myComponents/myArticleDashboard";
+import { MyArticleDashboard } from "../components/ui/myComponents/myBookDashboard";
 
 export default function ArticlesPage() {
   return (

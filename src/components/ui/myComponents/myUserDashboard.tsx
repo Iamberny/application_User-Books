@@ -4,7 +4,6 @@ import { SkeletonUserCard } from "./mySkeleton";
 
 export function MyUserDashboard() {
   const { data: users, isLoading } = useUsers();
-  
 
   if (isLoading)
     return (
