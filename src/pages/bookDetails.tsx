@@ -1,5 +1,5 @@
-import MyEditBook from "../components/ui/myComponents/myEditBook";
-import MyMenu from "../components/ui/myComponents/myMenu";
+import MyEditBook from "@/components/myComponents/myEditBook";
+import MyMenu from "@/components/myComponents/myMenu";
 
 function BookDetails() {
   return (

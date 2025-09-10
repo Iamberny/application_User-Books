@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,17 +8,19 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "../../dialog";
-import { Label } from "../../label";
-import { Input } from "../../input";
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Camera, Plus } from "lucide-react";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
-import { CreateUserPayLoad } from "../../../types/userType";
-import { CreateArticlePayLoad } from "../../../types/articleType";
-import { useCreateUser, useUsers } from "../../../hooks/useUsers";
-import { useCreateArticle } from "../../../hooks/useArticles";
-import { showUserAddedToast } from "./mySonner";
+import { CreateUserPayLoad } from "@/types/userType";
+import { CreateBookPayLoad } from "@/types/bookType";
+import { useCreateUser, useUsers } from "@/hooks/useUsers";
+import { useCreateBook } from "@/hooks/useBooks";
+import { showUserAddedToast } from "@/components/myComponents/mySonner";
+import { showBookAddedToast } from "@/components/myComponents/mySonner";
+
 
 export function MyCreateCardUser() {
   const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();
@@ -169,13 +171,12 @@ const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
   );
 };
 
-export function MyCreateCardArticle() {
+export function MyCreateCardBook() {
   const [preview, setPreview] = useState<string | null>(null);
   const [soldBy, setSoldBy] = useState<any>(null);
-
-  const { register, handleSubmit, reset } = useForm<CreateArticlePayLoad>();
-  const { mutate: createArticle } = useCreateArticle();
-
+  const [open, setOpen] = useState(false);
+  const { register, handleSubmit, reset } = useForm<CreateBookPayLoad>();
+  const { mutate: createBook } = useCreateBook();
   const { data: usersData, isLoading } = useUsers();
 
   const userOptions =
@@ -197,8 +198,8 @@ export function MyCreateCardArticle() {
     }
   };
 
-  const onSubmit = (data: CreateArticlePayLoad) => {
-    createArticle(
+  const onSubmit = (data: CreateBookPayLoad) => {
+    createBook(
       {
         name: data.name,
         description: data.description,
@@ -209,15 +210,23 @@ export function MyCreateCardArticle() {
       {
         onSuccess: () => {
           reset();
+          showBookAddedToast();
+          setOpen(false);
           setSoldBy(null);
           setPreview(null);
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 100);
         },
       }
     );
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"

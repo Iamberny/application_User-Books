@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Api } from "../api/api";
+import { Api } from "@/api/api";
 import {
   CreateUserPayLoad,
   UpdateUserPayLoad,
-} from "../types/userType";
+} from "@/types/userType";
 
 export function useUsers() {
   return useQuery({

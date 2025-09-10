@@ -1,4 +1,4 @@
-import { Button } from "../../button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -7,12 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../dialog";
+} from "@/components/ui/dialog";
 import { useState } from "react";
 
 export function MyDialogConfirmDeleteUser() {
-  const [image, setImage] = useState(null);
-  const [name, setName] = useState("Valentina Pace");
+  const [image] = useState(null);
+  const [name] = useState("Valentina Pace");
   return (
     <Dialog>
       <form>
@@ -76,8 +76,8 @@ export function MyDialogConfirmDeleteUser() {
 
 
 export function MyDialogConfirmDeleteBook() {
-  const [image, setImage] = useState(null);
-  const [name, setName] = useState("Il bosco incantato");
+  const [image] = useState(null);
+  const [name] = useState("Il bosco incantato");
   return (
     <Dialog>
       <form>

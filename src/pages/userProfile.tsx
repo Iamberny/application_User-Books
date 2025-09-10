@@ -1,5 +1,5 @@
-import MyEditUser from "../components/ui/myComponents/myEditUser";
-import MyMenu from "../components/ui/myComponents/myMenu";
+import MyEditUser from "@/components/myComponents/myEditUser";
+import MyMenu from "@/components/myComponents/myMenu";
 
 
 function UserProfile() {

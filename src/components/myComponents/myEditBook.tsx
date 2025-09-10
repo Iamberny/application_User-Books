@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Button } from "../../button";
+import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
-import { MyDialogConfirmDeleteBook } from "./myDialogConfirm";
-import { Label } from "../../label";
+import { MyDialogConfirmDeleteBook } from "@/components/myComponents/myDialogConfirm";
+import { Label } from "@/components/ui/label";
 import Select from "react-select";
 import { SquarePen } from "lucide-react";
-import { Input } from "../../input";
-import { Camera, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const users = [
   {
@@ -55,13 +54,13 @@ export default function MyEditBook() {
   const [selectedMenu, setSelectedMenu] = useState("profile");
   const [name, setName] = useState("Il bosco incantato");
   const [createdAt, setDate] = useState("01/01/1990");
-  const [idBook, setId] = useState("2012");
-  const [image, setImage] = useState(
+  const [idBook] = useState("2012");
+  const [image] = useState(
     "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
   );
-  const [soldBy, setSoldBy] = useState(null);
+  const [_, setSoldBy] = useState(null);
 
-  const [preview, setPreview] = useState<string | null>(null);
+  const [__, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

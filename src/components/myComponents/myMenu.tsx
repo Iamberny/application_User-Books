@@ -3,11 +3,11 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "../../navigation-menu";
+} from "@/components/ui/navigation-menu";
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "../../../lib/utils";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import "../../../index.css";
+import "@/index.css";
 
 export default function MyMenu() {
   const location = useLocation();
@@ -37,7 +37,7 @@ export default function MyMenu() {
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-<div className="h-6 w-px bg-muted mx-2 self-center line-color" />
+        <div className="h-6 w-px bg-muted mx-2 self-center line-color" />
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
