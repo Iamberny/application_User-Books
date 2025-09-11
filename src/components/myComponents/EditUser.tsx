@@ -1,22 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
-import { Book } from "lucide-react";
-import { MyDialogConfirmDeleteUser } from "@/components/myComponents/DialogConfirm";
-import { SquarePen } from "lucide-react";
+import { User, Book, SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MyDialogConfirmDeleteUser } from "@/components/myComponents/DialogConfirm";
+import { userType, UpdateUserPayLoad } from "@/types/userType";
+import { Api } from "@/api/api";
+import { showUserEditToast } from "./SonnerBookUser";
 
 export default function MyEditUser() {
+  const { id } = useParams<{ id: string }>();
+  const [user, setUser] = useState<userType | null>(null);
   const [selectedMenu, setSelectedMenu] = useState("profile");
-  const [name, setName] = useState("Valentina Pace");
-  const [createdAt, setDate] = useState("01/01/1990");
-  const [idUser] = useState("1001");
-  const [image] = useState(
-    "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
-  );
 
-  const [_, setPreview] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [image, setImage] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchUser = () => {
+      setLoading(true);
+
+      Api.getUsers()
+        .then((users: userType[]) => {
+          const foundUser = users.find((u) => u.id === id);
+          if (foundUser) {
+            setUser(foundUser);
+            setName(foundUser.name);
+            setBirthdate(foundUser.birthdate);
+            setCreatedAt(foundUser.createdAt);
+            setImage(foundUser.avatar);
+          }
+        })
+        .catch((err) => {
+          console.error("Errore nel caricamento dell'utente:", err);
+        })
+        .then(() => {
+          setLoading(false);
+        });
+    };
+
+    fetchUser();
+  }, [id]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -24,21 +55,39 @@ export default function MyEditUser() {
       const reader = new FileReader();
       reader.onload = () => {
         setPreview(reader.result as string);
+        setImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleSave = async () => {
+    if (!user) return;
+    const data: UpdateUserPayLoad = { name, birthdate, avatar: image };
+
+    try {
+      const updatedUser = await Api.updateUser(user.id, data);
+      setUser(updatedUser);
+      showUserEditToast();
+    } catch (err) {
+      console.error(err);
+      alert("Error updating user");
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>User not found</div>;
+
   return (
     <div className="flex justify-center items-center">
-      <div className="flex gap-6 justify-center ">
+      <div className="flex gap-6 justify-center">
         <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
           <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-col items-center gap-2 mt-5">
+            <div className="flex flex-col items-center gap-2 mt-5 relative">
               <Label htmlFor="picture" className="cursor-pointer">
                 <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
                   <img
-                    src={image}
+                    src={preview || image}
                     alt="Preview"
                     className="object-cover w-full h-full"
                   />
@@ -52,6 +101,7 @@ export default function MyEditUser() {
                 className="hidden"
                 onChange={handleFileChange}
               />
+
               <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
                 <SquarePen className="text-primary-color w-4 h-4" />
               </div>
@@ -93,7 +143,7 @@ export default function MyEditUser() {
             <div>
               <div className="flex justify-between">
                 <h1 className="text-2xl font-semibold mb-4">User profile</h1>
-                <p className="text-sm font-md mt-1">User ID: {idUser} </p>
+                <p className="text-sm font-md mt-1">User ID: {user.id}</p>
               </div>
 
               <div className="mb-4">
@@ -113,9 +163,9 @@ export default function MyEditUser() {
                   Birthdate
                 </label>
                 <input
-                  type="data"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  type="date"
+                  value={birthdate}
+                  onChange={(e) => setBirthdate(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
                 />
               </div>
@@ -128,16 +178,18 @@ export default function MyEditUser() {
                   type="text"
                   disabled
                   value={createdAt}
-                  onChange={(e) => setDate(e.target.value)}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-400 cursor-not-allowed"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-108">
+              <div className="grid grid-cols-2 gap-4 mt-80">
                 <Button className="bg-white hover:bg-indigo-700 hover:text-white text-primary-color border border-indigo-600 rounded-4xl px-4 py-2 cursor-pointer">
                   Delete changes
                 </Button>
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer">
+                <Button
+                  onClick={handleSave}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
+                >
                   Save
                 </Button>
               </div>
