@@ -20,7 +20,10 @@ interface MyFilterProps {
 export function MyFilter({ value, onChange }: MyFilterProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="dot-primary-color hover:text-white">
+      <DropdownMenuTrigger
+        asChild
+        className="dot-primary-color hover:text-white"
+      >
         <Button
           variant="outline"
           className="hover:bg-indigo-800 text-white cursor-pointer"

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import MyMenu from "@/components/myComponents/myMenu";
-import { MyInputUser } from "@/components/myComponents/myInput";
-import { MyFilter, FilterValue } from "@/components/myComponents/myFilter";
-import { MyCreateCardUser } from "@/components/myComponents/myCreateCardUserBook";
-import { MyUserDashboard } from "@/components/myComponents/myUserDashboard";
+import MyMenu from "@/components/myComponents/TopMenu";
+import { MyInputUser } from "@/components/myComponents/SearchInput";
+import { MyFilter, FilterValue } from "@/components/myComponents/FilterUser";
+import { MyCreateCardUser } from "@/components/myComponents/CreateCardUserBook";
+import { MyUserDashboard } from "@/components/myComponents/UserDashboard";
 
 export default function UsersPage() {
   const [filter, setFilter] = useState<FilterValue>("all");

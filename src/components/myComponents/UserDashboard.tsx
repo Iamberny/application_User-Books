@@ -1,8 +1,8 @@
-import { MyCardUser } from "@/components/myComponents/myCardUser";
-import { SkeletonUserCard } from "@/components/myComponents/mySkeleton";
+import { MyCardUser } from "@/components/myComponents/CardUser";
+import { SkeletonUserCard } from "@/components/myComponents/SkeletonBookUser";
 import { useUsers } from "@/hooks/useUsers";
 import { useBooks } from "@/hooks/useBooks";
-import { FilterValue } from "@/components/myComponents/myFilter";
+import { FilterValue } from "@/components/myComponents/FilterUser";
 
 interface Props {
   filter?: FilterValue;
@@ -34,7 +34,7 @@ export function MyUserDashboard({ filter = "all", query }: Props) {
       return usersWithBook.has(user.id) || !!user.booksId;
     if (filter === "withoutBooks")
       return !usersWithBook.has(user.id) && !user.booksId;
-    return true; 
+    return true;
   });
 
   const filteredUsers = filteredByType?.filter((user: any) =>

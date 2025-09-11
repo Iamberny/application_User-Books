@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
-import { MyDialogConfirmDeleteBook } from "@/components/myComponents/myDialogConfirm";
+import { MyDialogConfirmDeleteBook } from "@/components/myComponents/DialogConfirm";
 import { Label } from "@/components/ui/label";
 import Select from "react-select";
 import { SquarePen } from "lucide-react";
@@ -86,8 +86,6 @@ export default function MyEditBook() {
                     alt="Preview"
                     className="object-cover w-full h-full"
                   />
-              
-                 
                 </div>
               </Label>
 
@@ -98,10 +96,9 @@ export default function MyEditBook() {
                 className="hidden"
                 onChange={handleFileChange}
               />
-               <div className="absolute bg-white p-1 rounded-full shadow mt-35 ml-22">
-                    <SquarePen className="text-primary-color w-5 h-5" />
-                  </div>
-
+              <div className="absolute bg-white p-1 rounded-full shadow mt-35 ml-22">
+                <SquarePen className="text-primary-color w-5 h-5" />
+              </div>
             </div>
 
             <h2 className="text-lg font-semibold text-center">{name}</h2>

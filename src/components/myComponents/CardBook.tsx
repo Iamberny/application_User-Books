@@ -36,7 +36,7 @@ export function MyCardBook({ book }: BookProps) {
 
       <div className=" text-center mt-1 px-6 flex justify-center gap-2 text-sm">
         <Link
-          to={`/book/2012`}
+          to={`/book/${book.id}`}
           className="whitespace-nowrap bg-white hover:bg-indigo-800 hover:text-white text-primary-color border border-indigo-600  rounded-3xl px-4 py-2"
         >
           View details

@@ -2,35 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
-import { MyDialogConfirmDeleteUser } from "@/components/myComponents/myDialogConfirm";
+import { MyDialogConfirmDeleteUser } from "@/components/myComponents/DialogConfirm";
 import { SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-
-
-const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
-  const { data, innerRef, innerProps } = props;
-  return (
-    <div
-      ref={innerRef}
-      {...innerProps}
-      className="flex items-center justify-between px-2 py-1 hover:bg-gray-100 cursor-pointer"
-    >
-      <div className="flex items-center gap-2">
-        <img
-          src={data.image}
-          alt={data.label}
-          className="w-8 h-8 rounded-full object-cover"
-        />
-        <span>{data.label}</span>
-      </div>
-      <span className="text-gray-500 text-sm">{data.id}</span>
-    </div>
-  );
-};
-
-
 
 export default function MyEditUser() {
   const [selectedMenu, setSelectedMenu] = useState("profile");
@@ -59,8 +34,7 @@ export default function MyEditUser() {
       <div className="flex gap-6 justify-center ">
         <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
           <div className="flex flex-col items-center gap-4">
-           
-              <div className="flex flex-col items-center gap-2 mt-5">
+            <div className="flex flex-col items-center gap-2 mt-5">
               <Label htmlFor="picture" className="cursor-pointer">
                 <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
                   <img
@@ -68,8 +42,6 @@ export default function MyEditUser() {
                     alt="Preview"
                     className="object-cover w-full h-full"
                   />
-              
-                 
                 </div>
               </Label>
 
@@ -80,12 +52,10 @@ export default function MyEditUser() {
                 className="hidden"
                 onChange={handleFileChange}
               />
-               <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
-                    <SquarePen className="text-primary-color w-4 h-4" />
-                  </div>
-
+              <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
+                <SquarePen className="text-primary-color w-4 h-4" />
+              </div>
             </div>
-         
 
             <h2 className="text-lg font-semibold text-center">{name}</h2>
             <p className="text-sm text-muted-foreground">{createdAt}</p>
