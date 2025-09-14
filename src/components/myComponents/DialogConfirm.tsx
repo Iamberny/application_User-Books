@@ -9,8 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { userType } from "@/types/userType";
 
-export function MyDialogConfirmDeleteUser() {
+export function DialogConfirmDeleteUser() {
   const [image] = useState(null);
   const [name] = useState("Valentina Pace");
   return (
@@ -51,31 +52,29 @@ export function MyDialogConfirmDeleteUser() {
             </div>
           </DialogHeader>
 
-        <div className="">
-          <DialogFooter>
+          <div className="">
+            <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" className="cursor-pointer">
                   Cancel
                 </Button>
               </DialogClose>
-                
+
               <Button
                 type="submit"
                 className="bg-red-500 hover:bg-red-600 cursor-pointer"
               >
                 Confirm
               </Button>
-            
-          </DialogFooter>
-        </div>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </form>
     </Dialog>
   );
 }
 
-
-export function MyDialogConfirmDeleteBook() {
+export function DialogConfirmDeleteBook() {
   const [image] = useState(null);
   const [name] = useState("Il bosco incantato");
   return (
@@ -116,23 +115,85 @@ export function MyDialogConfirmDeleteBook() {
             </div>
           </DialogHeader>
 
-        <div>
-          <DialogFooter >
+          <div>
+            <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" className="cursor-pointer w-50">
                   Cancel
                 </Button>
               </DialogClose>
-                
+
               <Button
                 type="submit"
-                className="bg-red-500 hover:bg-red-600 cursor-pointer w-50 mr-1.5" 
+                className="bg-red-500 hover:bg-red-600 cursor-pointer w-50 mr-1.5"
               >
                 Confirm
               </Button>
-            
-          </DialogFooter>
-        </div>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </form>
+    </Dialog>
+  );
+}
+
+export function DialogConfirmDeleteChanges() {
+  const [user] = useState<userType | null>(null);
+  const [, setName] = useState("");
+  const [, setBirthdate] = useState("");
+  const [, setImage] = useState("");
+  const [, setPreview] = useState<string | null>(null);
+
+  const handleReturn = () => {
+    if (!user) return;
+    setName(user.name);
+    setBirthdate(user.birthdate);
+    setImage(user.avatar);
+    setPreview(null);
+  };
+
+  return (
+    <Dialog>
+      <form>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            className="bg-white hover:bg-indigo-700 hover:text-white text-primary-color border border-indigo-600 rounded-4xl px-35 py-2 cursor-pointer"
+          >
+            Delete changes
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Delete changes</DialogTitle>
+
+            <div className="flex flex-col items-center gap-5">
+              <p className="font-semibold text-center mt-10">
+                Are you sure you want to delete changes?
+              </p>
+
+              <p className="text-sm text-muted-foreground text-center mb-5 -mt-3">
+                The operation is permanent and cannot be cancelled.
+              </p>
+            </div>
+          </DialogHeader>
+
+          <div className="">
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="cursor-pointer">
+                  Cancel
+                </Button>
+              </DialogClose>
+
+              <Button
+                className="bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+                onClick={handleReturn}
+              >
+                Confirm
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </form>
     </Dialog>

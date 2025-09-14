@@ -4,10 +4,14 @@ import { Button } from "@/components/ui/button";
 import { User, Book, SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MyDialogConfirmDeleteUser } from "@/components/myComponents/DialogConfirm";
+import {
+  DialogConfirmDeleteChanges,
+  DialogConfirmDeleteUser,
+} from "@/components/myComponents/DialogConfirm";
 import { userType, UpdateUserPayLoad } from "@/types/userType";
 import { Api } from "@/api/api";
 import { showUserEditToast } from "./SonnerBookUser";
+import { SkeletonEditUser } from "./SkeletonBookUser";
 
 export default function MyEditUser() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +43,7 @@ export default function MyEditUser() {
           }
         })
         .catch((err) => {
-          console.error("Errore nel caricamento dell'utente:", err);
+          console.error("User loading error:", err);
         })
         .then(() => {
           setLoading(false);
@@ -75,7 +79,7 @@ export default function MyEditUser() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <SkeletonEditUser />;
   if (!user) return <div>User not found</div>;
 
   return (
@@ -133,7 +137,7 @@ export default function MyEditUser() {
                 Books sold
               </button>
 
-              <MyDialogConfirmDeleteUser />
+              <DialogConfirmDeleteUser />
             </div>
           </div>
         </div>
@@ -183,9 +187,8 @@ export default function MyEditUser() {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-80">
-                <Button className="bg-white hover:bg-indigo-700 hover:text-white text-primary-color border border-indigo-600 rounded-4xl px-4 py-2 cursor-pointer">
-                  Delete changes
-                </Button>
+                <DialogConfirmDeleteChanges />
+
                 <Button
                   onClick={handleSave}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"

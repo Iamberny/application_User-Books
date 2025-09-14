@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { Book } from "lucide-react";
-import { MyDialogConfirmDeleteBook } from "@/components/myComponents/DialogConfirm";
+import { DialogConfirmDeleteBook } from "@/components/myComponents/DialogConfirm";
 import { Label } from "@/components/ui/label";
 import Select from "react-select";
 import { SquarePen } from "lucide-react";
@@ -127,7 +127,7 @@ export default function MyEditBook() {
                 Sold by...
               </button>
 
-              <MyDialogConfirmDeleteBook />
+              <DialogConfirmDeleteBook />
             </div>
           </div>
         </div>

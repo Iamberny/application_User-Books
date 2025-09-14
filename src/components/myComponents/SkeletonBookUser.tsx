@@ -25,26 +25,76 @@ export function SkeletonUserCard() {
 export function SkeletonBookCard() {
   return (
     <div className="w-60 h-80 max-w-sm mt-25 ml-10 border rounded-lg shadow-lg p-4 flex flex-col items-center">
- 
       <div className="relative flex justify-center -mt-10">
         <div className="w-28 h-36 bg-white absolute top-0 left-1/2 transform -translate-x-1/2 shadow-md border rounded-md -mt-9" />
         <Skeleton className="w-28 h-36 relative -mt-7 rounded-md" />
       </div>
 
- 
       <div className="text-center mt-4 px-6 space-y-3 w-full">
         <Skeleton className="h-5 w-32 mx-auto rounded-md" />{" "}
-     
-        <Skeleton className="h-4 w-40 mx-auto rounded-md" /> 
+        <Skeleton className="h-4 w-40 mx-auto rounded-md" />
         <Skeleton className="h-4 w-24 mx-auto rounded-md mt-4" />{" "}
-     
-        <Skeleton className="h-8 w-16 mx-auto rounded-md mt-1" /> 
+        <Skeleton className="h-8 w-16 mx-auto rounded-md mt-1" />
       </div>
 
-   
       <div className="text-center mt-5 px-6 flex justify-center gap-2 text-sm">
         <Skeleton className="h-10 w-24 rounded-3xl" />
-        <Skeleton className="h-10 w-24 rounded-3xl" /> 
+        <Skeleton className="h-10 w-24 rounded-3xl" />
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonEditUser() {
+  return (
+    <div className="flex justify-center items-center">
+      <div className="flex gap-6 justify-center">
+        <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-2 mt-5 relative">
+              <Skeleton className="w-24 h-24 rounded-full" />
+            </div>
+
+            <div className="text-center space-y-2 -mt-2 w-full">
+              <Skeleton className="h-5 w-32 mx-auto rounded-md" />
+              <Skeleton className="h-4 w-40 mx-auto rounded-md" />
+            </div>
+
+            <div className="w-full mt-6 space-y-3">
+              <Skeleton className="h-12 w-full rounded-3xl" />
+              <Skeleton className="h-12 w-full rounded-3xl" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 flex-1 shadow-md w-200">
+          <div className="flex justify-between mb-6">
+            <Skeleton className="h-7 w-40 rounded-md" />
+            <Skeleton className="h-5 w-24 rounded-md" />
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-16">
+            <Skeleton className="h-10 w-full rounded-3xl" />
+            <Skeleton className="h-10 w-full rounded-3xl" />
+          </div>
+        </div>
       </div>
     </div>
   );
