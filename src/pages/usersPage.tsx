@@ -1,9 +1,10 @@
 import { useState } from "react";
 import MyMenu from "@/components/myComponents/TopMenu";
-import { MyInputUser } from "@/components/myComponents/SearchInput";
+import { SearchInput } from "@/components/myComponents/SearchInput";
 import { MyFilter, FilterValue } from "@/components/myComponents/FilterUser";
-import { MyCreateCardUser } from "@/components/myComponents/CreateCardUserBook";
+import { CreateCardUser } from "@/components/myComponents/CreateCardUserBook";
 import { MyUserDashboard } from "@/components/myComponents/UserDashboard";
+import TitleLink from "@/components/myComponents/TitleLink";
 
 export default function UsersPage() {
   const [filter, setFilter] = useState<FilterValue>("all");
@@ -13,13 +14,14 @@ export default function UsersPage() {
     <>
       <div>
         <MyMenu />
-        <h1 className="text-left text-2xl font-bold ml-15 -mt-10">Narrify</h1>
+        <h1 className="page-title">Narrify</h1>
+        <TitleLink />
 
-        <MyInputUser query={query} onChange={setQuery} />
+        <SearchInput query={query} onChange={setQuery} label={"user"} />
 
         <div className="ml-15 inline-flex space-x-430">
           <MyFilter value={filter} onChange={setFilter} />
-          <MyCreateCardUser />
+          <CreateCardUser />
         </div>
       </div>
 

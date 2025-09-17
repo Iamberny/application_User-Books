@@ -21,7 +21,7 @@ import { useCreateBook } from "@/hooks/useBooks";
 import { showUserAddedToast } from "@/components/myComponents/SonnerBookUser";
 import { showBookAddedToast } from "@/components/myComponents/SonnerBookUser";
 
-export function MyCreateCardUser() {
+export function CreateCardUser() {
   const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();
   const { mutate: createUser } = useCreateUser();
   const [preview, setPreview] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export function MyCreateCardUser() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer -ml-18"
+          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer -ml-18 transition-transform duration-200 hover:scale-105"
         >
           <Plus className="text-white" />
         </Button>
@@ -170,7 +170,7 @@ const CustomOption = (props: { data: any; innerRef: any; innerProps: any }) => {
   );
 };
 
-export function MyCreateCardBook() {
+export function CreateCardBook() {
   const [preview, setPreview] = useState<string | null>(null);
   const [soldBy, setSoldBy] = useState<any>(null);
   const [open, setOpen] = useState(false);

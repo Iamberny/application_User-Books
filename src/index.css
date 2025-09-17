@@ -3,7 +3,6 @@
 
 @tailwind utilities;
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -45,16 +44,15 @@
 }
 
 :root {
-  --primary-color: #4F51C0;
+  --primary-color: #4f51c0;
   --active-primary-color: #00039c;
   --line-color: #c4c4c4;
-  --color-text: #FFFF;
-  --color-bg: #F2F3F8;
-  --color-bg-delete: #E83D4D;
-
+  --color-text: #ffff;
+  --color-bg: #f2f3f8;
+  --color-bg-delete: #e83d4d;
 
   --radius: 0.625rem;
-  --background: #FAFAFA;
+  --background: #fafafa;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -126,37 +124,36 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground ;
+    @apply bg-background text-foreground;
   }
 }
 
-
-
-@layer utilities{
+@layer utilities {
   .text-primary-color {
     color: var(--primary-color);
   }
 
-  .dot-primary-color{
+  .dot-primary-color {
     background-color: var(--primary-color);
   }
 
-
-  .line-color{
+  .line-color {
     background-color: var(--line-color);
   }
 
-  .color-text-filter{
+  .color-text-filter {
     color: var(--color-text);
   }
 
-  .active-color-bg{
+  .active-color-bg {
     background-color: var(--active-primary-color);
   }
 
-  .color-bg{
+  .color-bg {
     background-color: var(--color-bg);
   }
-
 }
 
+.page-title {
+  @apply text-left text-2xl font-bold ml-15 -mt-10;
+}

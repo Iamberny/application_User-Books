@@ -36,14 +36,14 @@ export function MyCardBook({ book }: BookProps) {
       <div className=" text-center mt-1 px-6 flex justify-center gap-2 text-sm">
         <Link
           to={`/book/${book.id}`}
-          className="whitespace-nowrap bg-white hover:bg-indigo-800 hover:text-white text-primary-color border border-indigo-600  rounded-3xl px-4 py-2"
+          className="whitespace-nowrap bg-white hover:bg-indigo-800 hover:text-white text-primary-color border border-indigo-600  rounded-3xl px-4 py-2 transition-transform duration-200 hover:scale-105"
         >
           View details
         </Link>
 
         <Link
           to={book.buyUrl}
-          className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2"
+          className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2 transition-transform duration-200 hover:scale-105 "
         >
           Buy
         </Link>

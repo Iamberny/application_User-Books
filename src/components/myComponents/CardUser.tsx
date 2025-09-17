@@ -40,7 +40,7 @@ export function MyCardUser({ user }: UserProps) {
       <div className=" text-center px-6 justify-end mt-1">
         <Link
           to={`/user/${user.id}`}
-          className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2"
+          className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2 transition-transform duration-200 hover:scale-105"
         >
           View profile
         </Link>
