@@ -4,6 +4,7 @@ import { SearchInput } from "@/components/myComponents/SearchInput";
 import { MyFilter, FilterValue } from "@/components/myComponents/FilterUser";
 import { CreateCardUser } from "@/components/myComponents/CreateCardUserBook";
 import { MyUserDashboard } from "@/components/myComponents/UserDashboard";
+
 import TitleLink from "@/components/myComponents/TitleLink";
 
 export default function UsersPage() {
@@ -14,8 +15,10 @@ export default function UsersPage() {
     <>
       <div>
         <MyMenu />
-        <h1 className="page-title">Narrify</h1>
-        <TitleLink />
+
+        <div className="-mt-8">
+          <TitleLink />
+        </div>
 
         <SearchInput query={query} onChange={setQuery} label={"user"} />
 

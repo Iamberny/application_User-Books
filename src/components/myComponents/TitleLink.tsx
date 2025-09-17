@@ -10,7 +10,7 @@ export default function TitleLink() {
     : "/users";
 
   return (
-    <Link to={to} className="text-blue-500 hover:text-blue-700 font-medium">
+    <Link to={to} className="text-left text-2xl font-bold ml-16 -mt-20">
       Narrify
     </Link>
   );
