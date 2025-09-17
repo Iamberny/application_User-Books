@@ -12,7 +12,6 @@ import {
 
 function App() {
   return (
-    
     <Router>
       <Toaster position="bottom-right" />
 

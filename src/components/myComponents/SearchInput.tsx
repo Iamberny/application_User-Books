@@ -20,8 +20,6 @@ export function MyInputUser({ query, onChange }: Props) {
   );
 }
 
-
-
 export function MyInputBook({ query, onChange }: Props) {
   return (
     <div className="relative w-full max-w-sm mx-auto">

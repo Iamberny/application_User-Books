@@ -2,7 +2,6 @@ import { bookType } from "@/types/bookType";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
-
 type BookProps = {
   book: bookType;
 };

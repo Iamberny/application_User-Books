@@ -8,5 +8,5 @@ export interface bookType {
   buyUrl: string;
 }
 
-export type CreateBookPayLoad = Omit<bookType,  'id' | 'createdAt'>
+export type CreateBookPayLoad = Omit<bookType, "id" | "createdAt">;
 export type UpdateBookPayLoad = Partial<CreateBookPayLoad>;

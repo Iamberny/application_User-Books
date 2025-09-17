@@ -1,9 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Api } from "@/api/api";
-import {
-  CreateBookPayLoad,
-  UpdateBookPayLoad,
-} from "@/types/bookType";
+import { CreateBookPayLoad, UpdateBookPayLoad } from "@/types/bookType";
 
 export function useBooks() {
   return useQuery({
@@ -16,8 +13,7 @@ export function useCreateBook() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newBook: CreateBookPayLoad) =>
-      Api.createBook(newBook),
+    mutationFn: (newBook: CreateBookPayLoad) => Api.createBook(newBook),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
     },
@@ -38,7 +34,7 @@ export function useUpdateBook() {
 
 export function useDeleteBook() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (id: string) => Api.deleteBook(id),
     onSuccess: () => {
