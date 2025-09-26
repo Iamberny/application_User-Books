@@ -14,10 +14,9 @@ export function MyUserDashboard({ filter = "all", query }: Props) {
   if (isLoading) {
     return (
       <div className="flex flex-wrap mt-6 gap-6 ml-8 mb-5">
-        {" "}
         {Array.from({ length: 6 }).map((_, idx) => (
           <SkeletonUserCard key={idx} />
-        ))}{" "}
+        ))}
       </div>
     );
   }
