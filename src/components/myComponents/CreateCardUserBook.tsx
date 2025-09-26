@@ -229,7 +229,7 @@ export function CreateCardBook() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer"
+          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer mr-8 mt-4 transition-transform duration-200 hover:scale-105"
         >
           <Plus className=" text-white " />
         </Button>

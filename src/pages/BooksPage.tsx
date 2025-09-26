@@ -18,18 +18,12 @@ export default function BooksPage() {
         </div>
         <SearchInput query={query} onChange={setQuery} label={"book"} />
 
-        <div className="ml-460.5">
+        <div className="flex justify-end">
           <CreateCardBook />
         </div>
 
         <div className="grid col-4">
-          <div>
-            <MyBookDashboard
-              query={query}
-              books={books}
-              isLoading={isLoading}
-            />
-          </div>
+          <MyBookDashboard query={query} books={books} isLoading={isLoading} />
         </div>
       </div>
     </>

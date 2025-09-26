@@ -22,17 +22,13 @@ export default function UsersPage() {
 
         <SearchInput query={query} onChange={setQuery} label={"user"} />
 
-        <div className="ml-15 inline-flex space-x-430">
+        <div className="flex justify-between items-center gap-4 mt-4 ml-10 mr-8">
           <MyFilter value={filter} onChange={setFilter} />
           <CreateCardUser />
         </div>
       </div>
 
-      <div className="grid col-4">
-        <div>
-          <MyUserDashboard filter={filter} query={query} />
-        </div>
-      </div>
+      <MyUserDashboard filter={filter} query={query} />
     </>
   );
 }
