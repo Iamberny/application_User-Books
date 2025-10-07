@@ -99,3 +99,58 @@ export function SkeletonEditUser() {
     </div>
   );
 }
+
+export function SkeletonEditBook() {
+  return (
+    <div className="flex justify-center items-center">
+      <div className="flex gap-6 justify-center">
+        <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-2 mt-5 relative">
+              <Skeleton className="w-24 h-24 rounded-full" />
+            </div>
+
+            <div className="text-center space-y-2 -mt-2 w-full">
+              <Skeleton className="h-5 w-32 mx-auto rounded-md" />
+              <Skeleton className="h-4 w-40 mx-auto rounded-md" />
+            </div>
+
+            <div className="w-full mt-6 space-y-3">
+              <Skeleton className="h-12 w-full rounded-3xl" />
+              <Skeleton className="h-12 w-full rounded-3xl" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 flex-1 shadow-md w-200">
+          <div className="flex justify-between mb-6">
+            <Skeleton className="h-7 w-40 rounded-md" />
+            <Skeleton className="h-5 w-24 rounded-md" />
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div>
+              <Skeleton className="h-5 w-28 mb-2" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-16">
+            <Skeleton className="h-10 w-full rounded-3xl" />
+            <Skeleton className="h-10 w-full rounded-3xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
