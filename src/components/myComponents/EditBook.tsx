@@ -35,7 +35,6 @@ export default function MyEditBook() {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔹 Caricamento dati
   useEffect(() => {
     if (!id) return;
     const fetchBookAndUsers = async () => {
@@ -65,7 +64,6 @@ export default function MyEditBook() {
     fetchBookAndUsers();
   }, [id]);
 
-  // 🔹 Upload immagine
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -78,7 +76,6 @@ export default function MyEditBook() {
     }
   };
 
-  // 🔹 Salvataggio modifiche con toast
   const handleSave = async () => {
     if (!book) return;
     const data: UpdateBookPayLoad = {
@@ -100,13 +97,11 @@ export default function MyEditBook() {
   if (loading) return <SkeletonEditBook />;
   if (!book) return <div>Book not found</div>;
 
-  // Trova venditore selezionato
   const selectedSeller = users.find((u) => u.id === sellerId);
 
   return (
     <div className="flex justify-center items-center">
       <div className="flex gap-6 justify-center">
-        {/* Sidebar */}
         <div className="bg-white rounded-xl p-6 w-100 shadow-md ml-10">
           <div className="flex flex-col items-center gap-4">
             <div className="flex flex-col items-center gap-2 mt-5 relative">
@@ -138,14 +133,12 @@ export default function MyEditBook() {
           </div>
         </div>
 
-        {/* Right panel */}
         <div className="bg-white rounded-xl p-6 flex-1 shadow-md w-200">
           <div className="flex justify-between">
             <h1 className="text-2xl font-semibold mb-4">Edit Book</h1>
             <p className="text-sm mt-1">Book ID: {book.id}</p>
           </div>
 
-          {/* Nome */}
           <div className="mb-4">
             <label className="block mb-1 mt-10 font-medium text-gray-700">
               Name
@@ -158,7 +151,6 @@ export default function MyEditBook() {
             />
           </div>
 
-          {/* Descrizione */}
           <div className="mb-4">
             <label className="block mb-1 mt-10 font-medium text-gray-700">
               Description
@@ -170,7 +162,6 @@ export default function MyEditBook() {
             />
           </div>
 
-          {/* Buy URL */}
           <div className="mb-4">
             <label className="block mb-1 mt-10 font-medium text-gray-700">
               Buy URL
@@ -183,7 +174,6 @@ export default function MyEditBook() {
             />
           </div>
 
-          {/* Seller con avatar + ID nel trigger */}
           <div className="mb-4">
             <label className="block mb-1 mt-10 font-medium text-gray-700">
               Seller
@@ -235,7 +225,6 @@ export default function MyEditBook() {
             </Select>
           </div>
 
-          {/* Created at */}
           <div className="mb-4">
             <label className="block mb-1 mt-10 font-medium text-gray-700">
               Created at
@@ -248,7 +237,6 @@ export default function MyEditBook() {
             />
           </div>
 
-          {/* Pulsanti */}
           <div className="grid grid-cols-2 gap-4 mt-80">
             <DialogConfirmDeleteChanges />
             <Button

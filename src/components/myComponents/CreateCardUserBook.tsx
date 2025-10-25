@@ -67,8 +67,10 @@ export function CreateCardUser() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="dot-primary-color w-11 h-11 hover:bg-indigo-800 cursor-pointer -ml-18 transition-transform duration-200 hover:scale-105"
+          className="relative w-11 h-11 border-2 border-indigo-600 dot-primary-color hover:bg-indigo-800 text-white cursor-pointer -ml-18 transition-transform duration-200 hover:scale-105"
         >
+          <span className="absolute inset-0 rounded border-2 border-indigo-600 animate-ping-slow"></span>
+
           <Plus className="text-white" />
         </Button>
       </DialogTrigger>
