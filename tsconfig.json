@@ -19,6 +19,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "@/components/alert.tsx", "@/components/button.tsx", "@/components/dialog.tsx", "@/components/card.tsx", "@/components/dropdown-menu.tsx", "@/components/input.tsx", "@/components/label.tsx", "@/components/navigation-menu.tsx"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
