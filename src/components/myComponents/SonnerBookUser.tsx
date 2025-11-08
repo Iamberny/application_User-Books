@@ -119,3 +119,43 @@ export const showUserDeleteToast = () => {
     },
   });
 };
+
+export const showUserErrorToast = () => {
+  const now = new Date();
+  const formattedDate = now.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  toast("Failed to delete user", {
+    description: formattedDate,
+    action: {
+      label: "Undo",
+      onClick: () => console.log("Undo"),
+    },
+  });
+};
+
+export const showBookErrorToast = () => {
+  const now = new Date();
+  const formattedDate = now.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  toast("Failed to delete book", {
+    description: formattedDate,
+    action: {
+      label: "Undo",
+      onClick: () => console.log("Undo"),
+    },
+  });
+};

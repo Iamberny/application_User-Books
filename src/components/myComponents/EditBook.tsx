@@ -12,7 +12,11 @@ import { bookType, UpdateBookPayLoad } from "@/types/bookType";
 import { userType } from "@/types/userType";
 import { Api } from "@/api/api";
 import { SkeletonEditUser as SkeletonEditBook } from "./SkeletonBookUser";
-import { showBookEditToast, showBookDeleteToast } from "./SonnerBookUser";
+import {
+  showBookEditToast,
+  showBookDeleteToast,
+  showBookErrorToast,
+} from "./SonnerBookUser";
 import { MyCardUser } from "@/components/myComponents/CardUser";
 
 import {
@@ -29,7 +33,6 @@ export default function MyEditBook() {
   const [book, setBook] = useState<bookType | null>(null);
   const [users, setUsers] = useState<userType[]>([]);
 
-  // Stati del form
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [buyUrl, setBuyUrl] = useState("");
@@ -71,8 +74,6 @@ export default function MyEditBook() {
     };
     fetchBookAndUsers();
   }, [id, navigate]);
-
-  // --- FUNZIONI DI AZIONE ---
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -124,11 +125,9 @@ export default function MyEditBook() {
       navigate("/");
     } catch (err) {
       console.error("Failed to delete book:", err);
-      alert("Failed to delete book");
+      showBookErrorToast();
     }
   };
-
-  // --- RENDER ---
 
   if (loading) return <SkeletonEditBook />;
   if (!book) return <div>Book not found</div>;
@@ -138,22 +137,14 @@ export default function MyEditBook() {
   return (
     <div className="flex justify-center p-4 md:p-6 lg:p-8">
       <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto">
-        {/* COLONNA SINISTRA (MENU, IMMAGINE E AZIONI)
-          MODIFICATO: Aggiunto flex flex-col per "spingere" il delete alla base
-        */}
         <div className="bg-white rounded-xl p-6 shadow-md w-full lg:w-1/3 flex flex-col">
-          {/* Contenuto principale (cresce) 
-            MODIFICATO: Aggiunto flex-1
-          */}
           <div className="flex flex-col items-center gap-4 flex-1">
             {/* Anteprima Immagine */}
             <div className="flex flex-col items-center gap-2 mt-5 relative">
               <Label htmlFor="picture" className="cursor-pointer">
                 <div className="w-24 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
                   <img
-                    src={
-                      preview || picture || "https. ..." // Immagine placeholder
-                    }
+                    src={preview || picture || "https. ..."}
                     alt="Preview"
                     className="object-cover w-full h-full"
                   />
@@ -174,7 +165,6 @@ export default function MyEditBook() {
             <h2 className="text-lg font-semibold text-center">{name}</h2>
             <p className="text-sm text-muted-foreground">{createdAt}</p>
 
-            {/* Menu di navigazione */}
             <div className="w-full mt-4">
               <button
                 onClick={() => setSelectedMenu("details")}
@@ -196,20 +186,15 @@ export default function MyEditBook() {
               >
                 <User /> Sold by...
               </button>
-
-              {/* MODIFICATO: Bottone Delete RIMOSSO DA QUI */}
             </div>
           </div>
 
-          {/* MODIFICATO: Bottone Delete SPOSTATO QUI, alla base della colonna */}
           <div className="w-full mt-8">
             <DialogConfirmDeleteBook onConfirm={handleDeleteBook} book={book} />
           </div>
         </div>
 
-        {/* COLONNA DESTRA (CONTENUTO DINAMICO) */}
         <div className="bg-white rounded-xl p-6 shadow-md w-full lg:w-2/3">
-          {/* SEZIONE 1: DETTAGLI DEL LIBRO */}
           {selectedMenu === "details" && (
             <div>
               <div className="flex justify-between">
@@ -217,7 +202,6 @@ export default function MyEditBook() {
                 <p className="text-sm mt-1">Book ID: {book.id}</p>
               </div>
 
-              {/* Campi del form */}
               <div className="mb-4">
                 <label className="block mb-1 mt-10 font-medium text-gray-700">
                   Name
@@ -258,7 +242,6 @@ export default function MyEditBook() {
                   value={sellerId}
                   onValueChange={(value) => setSellerId(value)}
                 >
-                  {/* ... (Codice Select) ... */}
                   <SelectTrigger className="w-full border border-gray-300 rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500">
                     {selectedSeller ? (
                       <div className="flex items-center justify-between w-full">
@@ -315,7 +298,6 @@ export default function MyEditBook() {
                 />
               </div>
 
-              {/* Bottoni Save e Cancel (Corretti) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                 <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
                 <Button
@@ -328,10 +310,8 @@ export default function MyEditBook() {
             </div>
           )}
 
-          {/* SEZIONE 2: DETTAGLI DEL VENDITORE */}
           {selectedMenu === "seller" && (
             <div>
-              {/* ... (Codice MyCardUser - resta invariato) ... */}
               <h1 className="text-2xl font-semibold mb-4">Sold by</h1>
               {selectedSeller ? (
                 <div className="flex justify-center pt-8">
