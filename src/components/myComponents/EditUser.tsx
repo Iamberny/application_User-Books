@@ -12,7 +12,7 @@ import {
 } from "@/components/myComponents/DialogConfirm";
 import { userType, UpdateUserPayLoad } from "@/types/userType";
 import { Api } from "@/api/api";
-import { showUserEditToast } from "./SonnerBookUser";
+import { showUserEditToast, showUserDeleteToast } from "./SonnerBookUser";
 import { SkeletonEditUser } from "./SkeletonBookUser";
 import { SkeletonBookCard } from "./SkeletonBookUser";
 import { bookType } from "@/types/bookType";
@@ -103,7 +103,7 @@ export default function MyEditUser() {
     if (!user) return;
     try {
       await Api.deleteUser(user.id);
-      alert("User deleted successfully");
+      showUserDeleteToast();
       navigate("/");
     } catch (err) {
       console.error("Failed to delete user:", err);

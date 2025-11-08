@@ -12,7 +12,7 @@ import { bookType, UpdateBookPayLoad } from "@/types/bookType";
 import { userType } from "@/types/userType";
 import { Api } from "@/api/api";
 import { SkeletonEditUser as SkeletonEditBook } from "./SkeletonBookUser";
-import { showBookEditToast } from "./SonnerBookUser";
+import { showBookEditToast, showBookDeleteToast } from "./SonnerBookUser";
 import { MyCardUser } from "@/components/myComponents/CardUser";
 
 import {
@@ -120,7 +120,7 @@ export default function MyEditBook() {
     if (!book) return;
     try {
       await Api.deleteBook(book.id);
-      alert("Book deleted successfully");
+      showBookDeleteToast();
       navigate("/");
     } catch (err) {
       console.error("Failed to delete book:", err);
