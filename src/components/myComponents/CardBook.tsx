@@ -6,9 +6,9 @@ type BookProps = {
   book: bookType;
 };
 
-export function MyCardBook({ book }: BookProps) {
+export function CardBook({ book }: BookProps) {
   return (
-    <Card className="w-60 h-80 max-w-sm mt-25 ml-10">
+    <Card className="w-60 h-60 max-w-sm mt-25 ml-10">
       <div className="relative flex justify-center -mt-17">
         <div className="w-28 h-35 bg-white absolute top-0 left-1/2 transform -translate-x-1/2 shadow-xl/8 border rounded-lg -mt-9" />
 
@@ -27,13 +27,9 @@ export function MyCardBook({ book }: BookProps) {
         <p className="text-sm text-muted-foreground">
           Sold by user: {book.sellerId}
         </p>
-        <p className="text-md mt-6 px-6 font-medium">Book ID:</p>
-        <p className="text-4xl mt-1 text-primary-color font-semibold">
-          {book.id}
-        </p>
       </div>
 
-      <div className=" text-center mt-1 px-6 flex justify-center gap-2 text-sm">
+      <div className=" text-center mt-3 px-6 flex justify-center gap-2 text-sm">
         <Link
           to={`/book/${book.id}`}
           className="whitespace-nowrap bg-white hover:bg-indigo-800 hover:text-white text-primary-color border border-indigo-600  rounded-3xl px-4 py-2 transition-transform duration-200 hover:scale-105"

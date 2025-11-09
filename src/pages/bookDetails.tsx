@@ -1,18 +1,18 @@
-import MyEditBook from "@/components/myComponents/EditBook";
-import MyMenu from "@/components/myComponents/TopMenu";
+import EditBook from "@/components/myComponents/EditBook";
+import TopMenu from "@/components/myComponents/TopMenu";
 import TitleLink from "@/components/myComponents/TitleLink";
 
 function BookDetails() {
   return (
     <div>
-      <MyMenu />
+      <TopMenu />
 
       <div className="-mt-8">
         <TitleLink />
       </div>
 
       <div className="mt-12 mx-auto ">
-        <MyEditBook />
+        <EditBook />
       </div>
     </div>
   );

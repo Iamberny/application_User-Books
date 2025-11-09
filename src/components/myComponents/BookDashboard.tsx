@@ -1,18 +1,15 @@
 import { bookType } from "@/types/bookType";
-import { MyCardBook } from "@/components/myComponents/CardBook";
+import { CardBook } from "@/components/myComponents/CardBook";
 import { SkeletonBookCard } from "@/components/myComponents/SkeletonBookUser";
+import { useBooks } from "@/hooks/useBooks";
 
 interface MyBookDashboardProps {
   query: string;
-  books: bookType[];
-  isLoading: boolean;
 }
 
-export function MyBookDashboard({
-  query,
-  books,
-  isLoading,
-}: MyBookDashboardProps) {
+export function BookDashboard({ query }: MyBookDashboardProps) {
+  const { data: books, isLoading } = useBooks();
+
   if (isLoading) {
     return (
       <div className="flex flex-wrap mt-6 gap-6 ml-8 mb-5">
@@ -25,14 +22,26 @@ export function MyBookDashboard({
 
   const search = query.toLowerCase();
 
-  const filteredBooks = books.filter((book) =>
+  const filteredBooks = books?.filter((book: bookType) =>
     book.name.toLowerCase().includes(search)
   );
 
+  if (!filteredBooks || filteredBooks.length === 0) {
+    return (
+      <div className="flex justify-center items-center mt-6 ml-8 mb-5 h-48">
+        <p className="text-gray-500 italic">
+          {query
+            ? `No books found for "${query}"`
+            : "No books available at the moment."}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-wrap mt-6 gap-6 ml-8 mb-5">
-      {filteredBooks.map((book) => (
-        <MyCardBook key={book.id} book={book} />
+      {filteredBooks.map((book: bookType) => (
+        <CardBook key={book.id} book={book} />
       ))}
     </div>
   );

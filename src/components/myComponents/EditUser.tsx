@@ -5,7 +5,7 @@ import { User, Book, SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useBooks } from "@/hooks/useBooks";
-import { MyCardBook } from "@/components/myComponents/CardBook";
+import { CardBook } from "@/components/myComponents/CardBook";
 import {
   DialogConfirmDeleteChanges,
   DialogConfirmDeleteUser,
@@ -21,7 +21,7 @@ import { SkeletonEditUser } from "./SkeletonBookUser";
 import { SkeletonBookCard } from "./SkeletonBookUser";
 import { bookType } from "@/types/bookType";
 
-export default function MyEditUser() {
+export default function EditUser() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState<userType | null>(null);
@@ -175,63 +175,69 @@ export default function MyEditUser() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 w-full lg:w-2/3 shadow-md h-full flex flex-col">
-          {selectedMenu === "profile" && (
-            <>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <h1 className="text-2xl font-semibold mb-4">User profile</h1>
-                  <p className="text-sm font-md mt-1">User ID: {user.id}</p>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block mb-1 mt-10 font-medium text-gray-700">
-                    Full name
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 mt-10 font-medium text-gray-700">
-                    Birthdate
-                  </label>
-                  <input
-                    type="date"
-                    value={birthdate}
-                    onChange={(e) => setBirthdate(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 mt-10 font-medium text-gray-700">
-                    Created at
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={createdAt}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-400 cursor-not-allowed"
-                  />
-                </div>
+        <div className="grid bg-white rounded-xl p-6 w-full lg:w-2/3 shadow-md h-full">
+          <div
+            className={`col-start-1 row-start-1 transition-opacity ${
+              selectedMenu === "profile" ? "opacity-100" : "opacity-0 invisible"
+            } flex flex-col`}
+          >
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <h1 className="text-2xl font-semibold mb-4">User profile</h1>
+                <p className="text-sm font-md mt-1">User ID: {user.id}</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
-                <Button
-                  onClick={handleSave}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
-                >
-                  Save
-                </Button>
+              <div className="mb-4">
+                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                  Full name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                />
               </div>
-            </>
-          )}
+              <div className="mb-4">
+                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                  Birthdate
+                </label>
+                <input
+                  type="date"
+                  value={birthdate}
+                  onChange={(e) => setBirthdate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                  Created at
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={createdAt}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-400 cursor-not-allowed"
+                />
+              </div>
+            </div>
 
-          {selectedMenu === "books" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+              <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
+              <Button
+                onClick={handleSave}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+
+          <div
+            className={`col-start-1 row-start-1 transition-opacity ${
+              selectedMenu === "books" ? "opacity-100" : "opacity-0 invisible"
+            }`}
+          >
             <div className="flex-1">
               <h1 className="text-2xl font-semibold mb-4">Books sold</h1>
               {booksLoading ? (
@@ -251,14 +257,14 @@ export default function MyEditUser() {
                   return (
                     <div className="flex flex-wrap justify-center mt-6 gap-6 mb-5">
                       {soldBooks.map((book: bookType) => (
-                        <MyCardBook key={book.id} book={book} />
+                        <CardBook key={book.id} book={book} />
                       ))}
                     </div>
                   );
                 })()
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

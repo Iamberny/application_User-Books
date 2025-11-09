@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import "@/index.css";
 
-export default function MyMenu() {
+export default function TopMenu() {
   const location = useLocation();
 
   return (

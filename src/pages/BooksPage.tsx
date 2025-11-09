@@ -1,7 +1,7 @@
-import MyMenu from "@/components/myComponents/TopMenu";
+import TopMenu from "@/components/myComponents/TopMenu";
 import { SearchInput } from "@/components/myComponents/SearchInput";
 import { CreateCardBook } from "@/components/myComponents/CreateCardUserBook";
-import { MyBookDashboard } from "@/components/myComponents/BookDashboard";
+import { BookDashboard } from "@/components/myComponents/BookDashboard";
 import { useState } from "react";
 import { useBooks } from "@/hooks/useBooks";
 import TitleLink from "@/components/myComponents/TitleLink";
@@ -12,7 +12,7 @@ export default function BooksPage() {
   return (
     <>
       <div>
-        <MyMenu />
+        <TopMenu />
         <div className="-mt-8">
           <TitleLink />
         </div>
@@ -23,7 +23,7 @@ export default function BooksPage() {
         </div>
 
         <div className="grid col-4">
-          <MyBookDashboard query={query} books={books} isLoading={isLoading} />
+          <BookDashboard query={query} books={books} isLoading={isLoading} />
         </div>
       </div>
     </>

@@ -17,7 +17,7 @@ interface MyFilterProps {
   onChange: (v: FilterValue) => void;
 }
 
-export function MyFilter({ value, onChange }: MyFilterProps) {
+export function FilterUser({ value, onChange }: MyFilterProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger

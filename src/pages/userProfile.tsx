@@ -1,17 +1,17 @@
-import MyEditUser from "@/components/myComponents/EditUser";
-import MyMenu from "@/components/myComponents/TopMenu";
+import EditUser from "@/components/myComponents/EditUser";
+import TopMenu from "@/components/myComponents/TopMenu";
 import TitleLink from "@/components/myComponents/TitleLink";
 
 function UserProfile() {
   return (
     <div>
-      <MyMenu />
+      <TopMenu />
       <div className="-mt-8">
         <TitleLink />
       </div>
 
       <div className="mt-12  mx-auto ">
-        <MyEditUser />
+        <EditUser />
       </div>
     </div>
   );

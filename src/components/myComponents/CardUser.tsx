@@ -6,13 +6,13 @@ type UserProps = {
   user: userType;
 };
 
-export function MyCardUser({ user }: UserProps) {
+export function CardUser({ user }: UserProps) {
   const createdAtFormatted = new Date(user.createdAt).toLocaleDateString(
     "it-IT"
   );
 
   return (
-    <Card className="w-60 h-80 max-w-sm mt-25 ml-10">
+    <Card className="w-60 h-60 max-w-sm mt-25 ml-10">
       <div className="relative flex justify-center -mt-17">
         <div className="w-28 h-28 bg-white rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 shadow-xl/8 border" />
 
@@ -26,18 +26,14 @@ export function MyCardUser({ user }: UserProps) {
         />
       </div>
 
-      <div className="text-center px-6">
+      <div className="text-center px-6 mt-1">
         <h2 className="text-lg font-semibold">{user.name}</h2>
         <p className="text-sm text-muted-foreground">
           Created at {createdAtFormatted}
         </p>
-        <p className="text-md mt-6 px-6 font-medium">User ID:</p>
-        <p className="text-4xl mt-1 text-primary-color font-semibold">
-          {user.id}
-        </p>
       </div>
 
-      <div className=" text-center px-6 justify-end mt-1">
+      <div className=" text-center px-6 justify-end mt-2">
         <Link
           to={`/user/${user.id}`}
           className="inline-block w-40 text-center dot-primary-color text-white hover:bg-indigo-800 hover:text-white rounded-3xl border border-input px-4 py-2 transition-transform duration-200 hover:scale-105"

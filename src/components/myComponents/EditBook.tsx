@@ -17,7 +17,7 @@ import {
   showBookDeleteToast,
   showBookErrorToast,
 } from "./SonnerBookUser";
-import { MyCardUser } from "@/components/myComponents/CardUser";
+import { CardUser } from "@/components/myComponents/CardUser";
 
 import {
   Select,
@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function MyEditBook() {
+export default function EditBook() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [book, setBook] = useState<bookType | null>(null);
@@ -139,7 +139,6 @@ export default function MyEditBook() {
       <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto">
         <div className="bg-white rounded-xl p-6 shadow-md w-full lg:w-1/3 flex flex-col">
           <div className="flex flex-col items-center gap-4 flex-1">
-            {/* Anteprima Immagine */}
             <div className="flex flex-col items-center gap-2 mt-5 relative">
               <Label htmlFor="picture" className="cursor-pointer">
                 <div className="w-24 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
@@ -194,8 +193,12 @@ export default function MyEditBook() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-md w-full lg:w-2/3">
-          {selectedMenu === "details" && (
+        <div className="grid bg-white rounded-xl p-6 shadow-md w-full lg:w-2/3">
+          <div
+            className={`col-start-1 row-start-1 transition-opacity ${
+              selectedMenu === "details" ? "opacity-100" : "opacity-0 invisible"
+            }`}
+          >
             <div>
               <div className="flex justify-between">
                 <h1 className="text-2xl font-semibold mb-4">Book details</h1>
@@ -308,14 +311,18 @@ export default function MyEditBook() {
                 </Button>
               </div>
             </div>
-          )}
+          </div>
 
-          {selectedMenu === "seller" && (
+          <div
+            className={`col-start-1 row-start-1 transition-opacity ${
+              selectedMenu === "seller" ? "opacity-100" : "opacity-0 invisible"
+            }`}
+          >
             <div>
               <h1 className="text-2xl font-semibold mb-4">Sold by</h1>
               {selectedSeller ? (
                 <div className="flex justify-center pt-8">
-                  <MyCardUser user={selectedSeller} />
+                  <CardUser user={selectedSeller} />
                 </div>
               ) : (
                 <p className="text-gray-500 mt-4">
@@ -324,7 +331,7 @@ export default function MyEditBook() {
                 </p>
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
