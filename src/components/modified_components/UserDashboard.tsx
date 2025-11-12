@@ -1,12 +1,12 @@
-import { CardUser } from "@/components/myComponents/CardUser";
-import { SkeletonUserCard } from "@/components/myComponents/SkeletonBookUser";
+import { CardUser } from "@/components/modified_components/CardUser";
+import { SkeletonUserCard } from "@/components/modified_components/SkeletonBookUser";
 import { useUsers } from "@/hooks/useUsers";
 import { useBooks } from "@/hooks/useBooks";
 
 import { userType } from "@/types/userType";
 import { bookType } from "@/types/bookType";
 
-import { FilterValue } from "@/components/myComponents/FilterUser";
+import { FilterValue } from "@/components/modified_components/FilterUser";
 
 interface Props {
   filter?: FilterValue;

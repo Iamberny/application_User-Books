@@ -18,8 +18,8 @@ import { CreateUserPayLoad } from "@/types/userType";
 import { CreateBookPayLoad } from "@/types/bookType";
 import { useCreateUser, useUsers } from "@/hooks/useUsers";
 import { useCreateBook } from "@/hooks/useBooks";
-import { showUserAddedToast } from "@/components/myComponents/SonnerBookUser";
-import { showBookAddedToast } from "@/components/myComponents/SonnerBookUser";
+import { showUserAddedToast } from "@/components/modified_components/SonnerBookUser";
+import { showBookAddedToast } from "@/components/modified_components/SonnerBookUser";
 
 export function CreateCardUser() {
   const { register, handleSubmit, reset } = useForm<CreateUserPayLoad>();

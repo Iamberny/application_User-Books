@@ -1,10 +1,10 @@
-import TopMenu from "@/components/myComponents/TopMenu";
-import { SearchInput } from "@/components/myComponents/SearchInput";
-import { CreateCardBook } from "@/components/myComponents/CreateCardUserBook";
-import { BookDashboard } from "@/components/myComponents/BookDashboard";
+import TopMenu from "@/components/modified_components/TopMenu";
+import { SearchInput } from "@/components/modified_components/SearchInput";
+import { CreateCardBook } from "@/components/modified_components/CreateCardUserBook";
+import { BookDashboard } from "@/components/modified_components/BookDashboard";
 import { useState } from "react";
 import { useBooks } from "@/hooks/useBooks";
-import TitleLink from "@/components/myComponents/TitleLink";
+import TitleLink from "@/components/modified_components/TitleLink";
 
 export default function BooksPage() {
   const [query, setQuery] = useState("");

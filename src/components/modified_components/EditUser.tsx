@@ -5,11 +5,11 @@ import { User, Book, SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useBooks } from "@/hooks/useBooks";
-import { CardBook } from "@/components/myComponents/CardBook";
+import { CardBook } from "@/components/modified_components/CardBook";
 import {
   DialogConfirmDeleteChanges,
   DialogConfirmDeleteUser,
-} from "@/components/myComponents/DialogConfirm";
+} from "@/components/modified_components/DialogConfirm";
 import { userType, UpdateUserPayLoad } from "@/types/userType";
 import { Api } from "@/api/api";
 import {

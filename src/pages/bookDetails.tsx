@@ -1,6 +1,6 @@
-import EditBook from "@/components/myComponents/EditBook";
-import TopMenu from "@/components/myComponents/TopMenu";
-import TitleLink from "@/components/myComponents/TitleLink";
+import EditBook from "@/components/modified_components/EditBook";
+import TopMenu from "@/components/modified_components/TopMenu";
+import TitleLink from "@/components/modified_components/TitleLink";
 
 function BookDetails() {
   return (

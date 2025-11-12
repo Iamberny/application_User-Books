@@ -7,7 +7,7 @@ import { SquarePen, Book, User } from "lucide-react";
 import {
   DialogConfirmDeleteChanges,
   DialogConfirmDeleteBook,
-} from "@/components/myComponents/DialogConfirm";
+} from "@/components/modified_components/DialogConfirm";
 import { bookType, UpdateBookPayLoad } from "@/types/bookType";
 import { userType } from "@/types/userType";
 import { Api } from "@/api/api";
@@ -17,7 +17,7 @@ import {
   showBookDeleteToast,
   showBookErrorToast,
 } from "./SonnerBookUser";
-import { CardUser } from "@/components/myComponents/CardUser";
+import { CardUser } from "@/components/modified_components/CardUser";
 
 import {
   Select,

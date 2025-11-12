@@ -1,6 +1,6 @@
-import EditUser from "@/components/myComponents/EditUser";
-import TopMenu from "@/components/myComponents/TopMenu";
-import TitleLink from "@/components/myComponents/TitleLink";
+import EditUser from "@/components/modified_components/EditUser";
+import TopMenu from "@/components/modified_components/TopMenu";
+import TitleLink from "@/components/modified_components/TitleLink";
 
 function UserProfile() {
   return (

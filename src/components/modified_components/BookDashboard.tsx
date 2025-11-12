@@ -1,6 +1,6 @@
 import { bookType } from "@/types/bookType";
-import { CardBook } from "@/components/myComponents/CardBook";
-import { SkeletonBookCard } from "@/components/myComponents/SkeletonBookUser";
+import { CardBook } from "@/components/modified_components/CardBook";
+import { SkeletonBookCard } from "@/components/modified_components/SkeletonBookUser";
 import { useBooks } from "@/hooks/useBooks";
 
 interface MyBookDashboardProps {
