@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { User, Book, SquarePen } from "lucide-react";
+import { User, Book, SquarePen, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useBooks } from "@/hooks/useBooks";
@@ -34,6 +34,7 @@ export default function EditUser() {
   const [preview, setPreview] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const { data: books = [], isLoading: booksLoading } = useBooks();
 
   useEffect(() => {
@@ -85,6 +86,7 @@ export default function EditUser() {
       setUser(updatedUser);
       showUserEditToast();
       setPreview(null);
+      setIsEditing(false);
     } catch (err) {
       console.error(err);
       alert("Error updating user");
@@ -98,6 +100,7 @@ export default function EditUser() {
       setImage(user.avatar);
       setPreview(null);
     }
+    setIsEditing(false);
   };
 
   const handleDeleteUser = async () => {
@@ -121,25 +124,38 @@ export default function EditUser() {
         <div className="bg-white rounded-xl p-6 w-full lg:w-1/3 shadow-md flex flex-col h-full">
           <div className="flex flex-col items-center gap-4 flex-1">
             <div className="flex flex-col items-center gap-2 mt-5 relative">
-              <Label htmlFor="picture" className="cursor-pointer">
-                <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
+              {isEditing ? (
+                <>
+                  <Label htmlFor="picture" className="cursor-pointer">
+                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
+                      <img
+                        src={preview || image}
+                        alt="Preview"
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </Label>
+                  <Input
+                    id="picture"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    disabled={!isEditing}
+                  />
+                  <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
+                    <SquarePen className="text-primary-color w-4 h-4" />
+                  </div>
+                </>
+              ) : (
+                <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative">
                   <img
                     src={preview || image}
-                    alt="Preview"
+                    alt="Avatar"
                     className="object-cover w-full h-full"
                   />
                 </div>
-              </Label>
-              <Input
-                id="picture"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
-                <SquarePen className="text-primary-color w-4 h-4" />
-              </div>
+              )}
             </div>
 
             <h2 className="text-lg font-semibold text-center">{name}</h2>
@@ -171,7 +187,12 @@ export default function EditUser() {
           </div>
 
           <div className="w-full mt-8">
-            <DialogConfirmDeleteUser onConfirm={handleDeleteUser} user={user} />
+            {isEditing && (
+              <DialogConfirmDeleteUser
+                onConfirm={handleDeleteUser}
+                user={user}
+              />
+            )}
           </div>
         </div>
 
@@ -195,9 +216,11 @@ export default function EditUser() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
                 />
               </div>
+
               <div className="mb-4">
                 <label className="block mb-1 mt-10 font-medium text-gray-700">
                   Birthdate
@@ -206,9 +229,11 @@ export default function EditUser() {
                   type="date"
                   value={birthdate}
                   onChange={(e) => setBirthdate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
                 />
               </div>
+
               <div className="mb-4">
                 <label className="block mb-1 mt-10 font-medium text-gray-700">
                   Created at
@@ -217,19 +242,31 @@ export default function EditUser() {
                   type="text"
                   disabled
                   value={createdAt}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-400 cursor-not-allowed"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none text-gray-400 cursor-not-allowed"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-              <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
-              <Button
-                onClick={handleSave}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
-              >
-                Save
-              </Button>
+              {isEditing ? (
+                <>
+                  <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
+                  <Button
+                    onClick={handleSave}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
+                  >
+                    Save
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer md:col-span-2 flex items-center justify-center gap-2"
+                >
+                  <Pencil className="w-4 h-4" />
+                  Edit Profile
+                </Button>
+              )}
             </div>
           </div>
 
