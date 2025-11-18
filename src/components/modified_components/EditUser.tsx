@@ -1,122 +1,134 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { User, Book, Pencil, Upload } from "lucide-react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
-import { User, Book, SquarePen, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useBooks } from "@/hooks/useBooks";
 import { CardBook } from "@/components/modified_components/CardBook";
 import {
   DialogConfirmDeleteChanges,
   DialogConfirmDeleteUser,
 } from "@/components/modified_components/DialogConfirm";
+import { SkeletonEditUser, SkeletonBookCard } from "./SkeletonBookUser";
+
+import { useUsers, useUpdateUser, useDeleteUser } from "@/hooks/useUsers";
+import { useBooks } from "@/hooks/useBooks";
 import { userType, UpdateUserPayLoad } from "@/types/userType";
-import { Api } from "@/api/api";
+import { bookType } from "@/types/bookType";
+
 import {
   showUserEditToast,
   showUserDeleteToast,
   showUserErrorToast,
 } from "./SonnerBookUser";
-import { SkeletonEditUser } from "./SkeletonBookUser";
-import { SkeletonBookCard } from "./SkeletonBookUser";
-import { bookType } from "@/types/bookType";
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [user, setUser] = useState<userType | null>(null);
-  const [selectedMenu, setSelectedMenu] = useState("profile");
 
-  const [name, setName] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [createdAt, setCreatedAt] = useState("");
-  const [image, setImage] = useState("");
+  const [selectedMenu, setSelectedMenu] = useState("profile");
+  const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const { data: users = [], isLoading: usersLoading } = useUsers();
   const { data: books = [], isLoading: booksLoading } = useBooks();
 
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
+
+  const currentUser = useMemo(() => {
+    return users.find((u: userType) => u.id === id);
+  }, [users, id]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { isDirty },
+  } = useForm<UpdateUserPayLoad>({
+    defaultValues: {
+      name: "",
+      birthdate: "",
+      avatar: "",
+    },
+  });
+
+  const currentAvatar = watch("avatar");
+
   useEffect(() => {
-    if (!id) return;
+    if (!usersLoading && !currentUser && id) {
+      navigate("/");
+    }
+  }, [usersLoading, currentUser, id, navigate]);
 
-    const fetchUser = () => {
-      setLoading(true);
-      Api.getUsers()
-        .then((users: userType[]) => {
-          const foundUser = users.find((u) => u.id === id);
-          if (foundUser) {
-            setUser(foundUser);
-            setName(foundUser.name);
-            setBirthdate(foundUser.birthdate);
-            setCreatedAt(foundUser.createdAt);
-            setImage(foundUser.avatar);
-          } else {
-            navigate("/");
-          }
-        })
-        .catch((err) => {
-          console.error("User loading error:", err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-
-    fetchUser();
-  }, [id, navigate]);
+  useEffect(() => {
+    if (currentUser) {
+      reset({
+        name: currentUser.name,
+        birthdate: currentUser.birthdate,
+        avatar: currentUser.avatar,
+      });
+      setPreview(null);
+    }
+  }, [currentUser, reset]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreview(reader.result as string);
-        setImage(reader.result as string);
+        const result = reader.result as string;
+        setPreview(result);
+        setValue("avatar", result, { shouldDirty: true });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSave = async () => {
-    if (!user) return;
-    const data: UpdateUserPayLoad = { name, birthdate, avatar: image };
-    try {
-      const updatedUser = await Api.updateUser(user.id, data);
-      setUser(updatedUser);
-      showUserEditToast();
-      setPreview(null);
-      setIsEditing(false);
-    } catch (err) {
-      console.error(err);
-      alert("Error updating user");
-    }
+  const onSubmit = (data: UpdateUserPayLoad) => {
+    if (!currentUser) return;
+    updateUserMutation.mutate(
+      { id: currentUser.id, data },
+      {
+        onSuccess: () => {
+          showUserEditToast();
+          setIsEditing(false);
+          setPreview(null);
+        },
+        onError: (err) => {
+          console.error(err);
+          toast.error("Error updating user");
+        },
+      }
+    );
+  };
+
+  const handleDeleteUser = () => {
+    if (!currentUser) return;
+    deleteUserMutation.mutate(currentUser.id, {
+      onSuccess: () => {
+        showUserDeleteToast();
+        navigate("/");
+      },
+      onError: () => {
+        showUserErrorToast();
+      },
+    });
   };
 
   const handleCancelChanges = () => {
-    if (user) {
-      setName(user.name);
-      setBirthdate(user.birthdate);
-      setImage(user.avatar);
-      setPreview(null);
-    }
+    reset();
+    setPreview(null);
     setIsEditing(false);
   };
 
-  const handleDeleteUser = async () => {
-    if (!user) return;
-    try {
-      await Api.deleteUser(user.id);
-      showUserDeleteToast();
-      navigate("/");
-    } catch (err) {
-      console.error("Failed to delete user:", err);
-      showUserErrorToast();
-    }
-  };
-
-  if (loading) return <SkeletonEditUser />;
-  if (!user) return <div>User not found</div>;
+  if (usersLoading) return <SkeletonEditUser />;
+  if (!currentUser) return null;
 
   return (
     <div className="flex justify-center p-4 md:p-6 lg:p-8 min-h-[800px]">
@@ -124,63 +136,49 @@ export default function EditUser() {
         <div className="bg-white rounded-xl p-6 w-full lg:w-1/3 shadow-md flex flex-col h-full">
           <div className="flex flex-col items-center gap-4 flex-1">
             <div className="flex flex-col items-center gap-2 mt-5 relative">
-              {isEditing ? (
-                <>
-                  <Label htmlFor="picture" className="cursor-pointer">
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
-                      <img
-                        src={preview || image}
-                        alt="Preview"
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  </Label>
-                  <Input
-                    id="picture"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    disabled={!isEditing}
-                  />
-                  <div className="absolute bg-white p-1 rounded-full shadow mt-19 ml-15">
-                    <SquarePen className="text-primary-color w-4 h-4" />
-                  </div>
-                </>
-              ) : (
-                <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative">
-                  <img
-                    src={preview || image}
-                    alt="Avatar"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              )}
+              <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative">
+                <img
+                  src={preview || currentUser.avatar}
+                  alt="Avatar"
+                  className="object-cover w-full h-full"
+                />
+              </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-center">{name}</h2>
-            <p className="text-sm text-muted-foreground">{createdAt}</p>
+            <h2 className="text-lg font-semibold text-center">
+              {currentUser.name}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {currentUser.createdAt}
+            </p>
 
             <div className="w-full mt-4">
               <button
                 onClick={() => setSelectedMenu("profile")}
-                className={`w-full h-13 py-2 text-left px-4 rounded-4xl mb-8 mt-5 flex gap-2 items-center cursor-pointer ${
-                  selectedMenu === "profile"
-                    ? "bg-violet-100 text-primary-color font-semibold"
-                    : "hover:bg-gray-100"
+                disabled={isEditing}
+                className={`w-full h-13 py-2 text-left px-4 rounded-4xl mb-8 mt-5 flex gap-2 items-center transition-all duration-200 ${
+                  isEditing
+                    ? "opacity-40 cursor-not-allowed text-gray-400"
+                    : selectedMenu === "profile"
+                    ? "bg-violet-100 text-primary-color font-semibold cursor-default"
+                    : "hover:bg-gray-100 cursor-pointer"
                 }`}
               >
-                <User /> User profile
+                <User className={isEditing ? "text-gray-400" : ""} /> User
+                profile
               </button>
               <button
                 onClick={() => setSelectedMenu("books")}
-                className={`w-full h-13 py-2 text-left px-4 rounded-4xl flex gap-2 items-center cursor-pointer ${
-                  selectedMenu === "books"
-                    ? "bg-violet-100 text-primary-color font-semibold"
-                    : "hover:bg-gray-100"
+                disabled={isEditing}
+                className={`w-full h-13 py-2 text-left px-4 rounded-4xl flex gap-2 items-center transition-all duration-200 ${
+                  isEditing
+                    ? "opacity-40 cursor-not-allowed text-gray-400"
+                    : selectedMenu === "books"
+                    ? "bg-violet-100 text-primary-color font-semibold cursor-default"
+                    : "hover:bg-gray-100 cursor-pointer"
                 }`}
               >
-                <Book />
+                <Book className={isEditing ? "text-gray-400" : ""} />
                 Books sold
               </button>
             </div>
@@ -190,7 +188,7 @@ export default function EditUser() {
             {isEditing && (
               <DialogConfirmDeleteUser
                 onConfirm={handleDeleteUser}
-                user={user}
+                user={currentUser}
               />
             )}
           </div>
@@ -205,43 +203,70 @@ export default function EditUser() {
             <div className="flex-1">
               <div className="flex justify-between">
                 <h1 className="text-2xl font-semibold mb-4">User profile</h1>
-                <p className="text-sm font-md mt-1">User ID: {user.id}</p>
+                <p className="text-sm font-md mt-1">
+                  User ID: {currentUser.id}
+                </p>
               </div>
 
+              {isEditing && (
+                <div className="flex flex-col items-center justify-center mb-6 animate-in fade-in zoom-in duration-300">
+                  <Label
+                    htmlFor="picture-upload"
+                    className="cursor-pointer group relative"
+                  >
+                    <div className="w-28 h-28 rounded-full border-2 border-dashed border-indigo-300 hover:border-indigo-500 flex items-center justify-center overflow-hidden relative transition-colors bg-gray-50">
+                      <img
+                        src={preview || currentAvatar}
+                        alt="Preview"
+                        className="object-cover w-full h-full opacity-60 group-hover:opacity-40 transition-opacity"
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-indigo-600">
+                        <Upload className="w-6 h-6 mb-1" />
+                        <span className="text-xs font-semibold">Change</span>
+                      </div>
+                    </div>
+                  </Label>
+                  <Input
+                    id="picture-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </div>
+              )}
+
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-2 font-medium text-gray-700">
                   Full name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                </Label>
+                <Input
+                  {...register("name")}
                   disabled={!isEditing}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-10 font-medium text-gray-700">
                   Birthdate
-                </label>
-                <input
+                </Label>
+                <Input
                   type="date"
-                  value={birthdate}
-                  onChange={(e) => setBirthdate(e.target.value)}
+                  {...register("birthdate")}
                   disabled={!isEditing}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-10 font-medium text-gray-700">
                   Created at
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   disabled
-                  value={createdAt}
+                  value={currentUser.createdAt}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none text-gray-400 cursor-not-allowed"
                 />
               </div>
@@ -252,10 +277,15 @@ export default function EditUser() {
                 <>
                   <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
                   <Button
-                    onClick={handleSave}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={updateUserMutation.isPending || !isDirty}
+                    className={`bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer ${
+                      !isDirty || updateUserMutation.isPending
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   >
-                    Save
+                    {updateUserMutation.isPending ? "Saving..." : "Save"}
                   </Button>
                 </>
               ) : (
@@ -286,7 +316,8 @@ export default function EditUser() {
               ) : (
                 (() => {
                   const soldBooks = books.filter(
-                    (b: bookType) => String(b.sellerId) === String(user.id)
+                    (b: bookType) =>
+                      String(b.sellerId) === String(currentUser.id)
                   );
                   if (soldBooks.length === 0) {
                     return <p className="text-gray-500">No books sold.</p>;
