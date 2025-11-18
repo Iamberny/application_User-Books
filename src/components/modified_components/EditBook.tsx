@@ -1,24 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Book, User, Pencil, Upload } from "lucide-react";
+import { toast } from "sonner";
+
+// UI Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SquarePen, Book, User } from "lucide-react";
-import {
-  DialogConfirmDeleteChanges,
-  DialogConfirmDeleteBook,
-} from "@/components/modified_components/DialogConfirm";
-import { bookType, UpdateBookPayLoad } from "@/types/bookType";
-import { userType } from "@/types/userType";
-import { Api } from "@/api/api";
-import { SkeletonEditUser as SkeletonEditBook } from "./SkeletonBookUser";
-import {
-  showBookEditToast,
-  showBookDeleteToast,
-  showBookErrorToast,
-} from "./SonnerBookUser";
-import { CardUser } from "@/components/modified_components/CardUser";
-
+import { Textarea } from "@/components/ui/textarea"; // Assumo tu abbia questo componente in shadcn, altrimenti usa <textarea className="...input-styles" />
 import {
   Select,
   SelectContent,
@@ -27,292 +17,376 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Custom Components
+import { CardUser } from "@/components/modified_components/CardUser";
+import {
+  DialogConfirmDeleteChanges,
+  DialogConfirmDeleteBook,
+} from "@/components/modified_components/DialogConfirm";
+import { SkeletonEditUser as SkeletonEditBook } from "./SkeletonBookUser";
+
+// Hooks & Types
+import { useBooks, useUpdateBook, useDeleteBook } from "@/hooks/useBooks";
+import { useUsers } from "@/hooks/useUsers"; // Serve per la lista dei venditori
+import { bookType, UpdateBookPayLoad } from "@/types/bookType";
+import { userType } from "@/types/userType";
+
+// Toasts
+import {
+  showBookEditToast,
+  showBookDeleteToast,
+  showBookErrorToast,
+} from "./SonnerBookUser";
+
 export default function EditBook() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [book, setBook] = useState<bookType | null>(null);
-  const [users, setUsers] = useState<userType[]>([]);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [buyUrl, setBuyUrl] = useState("");
-  const [picture, setPicture] = useState("");
-  const [sellerId, setSellerId] = useState("");
-  const [createdAt, setCreatedAt] = useState("");
+  // UI States
+  const [selectedMenu, setSelectedMenu] = useState("details");
+  const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [selectedMenu, setSelectedMenu] = useState("details");
+  // Data Fetching (TanStack Query)
+  const { data: books = [], isLoading: booksLoading } = useBooks();
+  const { data: users = [], isLoading: usersLoading } = useUsers();
 
+  // Mutations
+  const updateBookMutation = useUpdateBook();
+  const deleteBookMutation = useDeleteBook();
+
+  // Derived State
+  const currentBook = useMemo(() => {
+    return books.find((b: bookType) => b.id === id);
+  }, [books, id]);
+
+  const currentSeller = useMemo(() => {
+    if (!currentBook) return null;
+    return users.find((u: userType) => u.id === currentBook.sellerId);
+  }, [users, currentBook]);
+
+  // React Hook Form Setup
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { isDirty },
+  } = useForm<UpdateBookPayLoad>({
+    defaultValues: {
+      name: "",
+      description: "",
+      buyUrl: "",
+      picture: "",
+      sellerId: "",
+    },
+  });
+
+  const currentPicture = watch("picture");
+  const watchedSellerId = watch("sellerId");
+
+  // Redirect if not found
   useEffect(() => {
-    if (!id) return;
-    const fetchBookAndUsers = async () => {
-      setLoading(true);
-      try {
-        const [books, usersList] = await Promise.all([
-          Api.getBooks(),
-          Api.getUsers(),
-        ]);
-        setUsers(usersList);
-        const foundBook = books.find((b: bookType) => b.id === id);
-        if (foundBook) {
-          setBook(foundBook);
-          setName(foundBook.name);
-          setDescription(foundBook.description);
-          setBuyUrl(foundBook.buyUrl);
-          setPicture(foundBook.picture);
-          setSellerId(foundBook.sellerId);
-          setCreatedAt(foundBook.createdAt);
-        } else {
-          navigate("/");
-        }
-      } catch (err) {
-        console.error("Book loading error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBookAndUsers();
-  }, [id, navigate]);
+    if (!booksLoading && !currentBook && id) {
+      navigate("/");
+    }
+  }, [booksLoading, currentBook, id, navigate]);
 
+  // Sync Form with Data
+  useEffect(() => {
+    if (currentBook) {
+      reset({
+        name: currentBook.name,
+        description: currentBook.description,
+        buyUrl: currentBook.buyUrl,
+        picture: currentBook.picture,
+        sellerId: currentBook.sellerId,
+      });
+      setPreview(null);
+    }
+  }, [currentBook, reset]);
+
+  // Handlers
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreview(reader.result as string);
-        setPicture(reader.result as string);
+        const result = reader.result as string;
+        setPreview(result);
+        setValue("picture", result, { shouldDirty: true });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSave = async () => {
-    if (!book) return;
-    const data: UpdateBookPayLoad = {
-      name,
-      description,
-      buyUrl,
-      picture,
-      sellerId,
-    };
-    try {
-      const updatedBook = await Api.updateBook(book.id, data);
-      setBook(updatedBook);
-      showBookEditToast();
-      setPreview(null);
-    } catch (err) {
-      console.error(err);
-    }
+  const onSubmit = (data: UpdateBookPayLoad) => {
+    if (!currentBook) return;
+
+    updateBookMutation.mutate(
+      { id: currentBook.id, data },
+      {
+        onSuccess: () => {
+          showBookEditToast();
+          setIsEditing(false);
+          setPreview(null);
+        },
+        onError: (err) => {
+          console.error(err);
+          toast.error("Error updating book");
+        },
+      }
+    );
+  };
+
+  const handleDeleteBook = () => {
+    if (!currentBook) return;
+    deleteBookMutation.mutate(currentBook.id, {
+      onSuccess: () => {
+        showBookDeleteToast();
+        navigate("/");
+      },
+      onError: () => {
+        showBookErrorToast();
+      },
+    });
   };
 
   const handleCancelChanges = () => {
-    if (book) {
-      setName(book.name);
-      setDescription(book.description);
-      setBuyUrl(book.buyUrl);
-      setPicture(book.picture);
-      setSellerId(book.sellerId);
-      setPreview(null);
-    }
+    reset();
+    setPreview(null);
+    setIsEditing(false);
   };
 
-  const handleDeleteBook = async () => {
-    if (!book) return;
-    try {
-      await Api.deleteBook(book.id);
-      showBookDeleteToast();
-      navigate("/");
-    } catch (err) {
-      console.error("Failed to delete book:", err);
-      showBookErrorToast();
-    }
-  };
-
-  if (loading) return <SkeletonEditBook />;
-  if (!book) return <div>Book not found</div>;
-
-  const selectedSeller = users.find((u) => u.id === sellerId);
+  // Loading States
+  if (booksLoading || usersLoading) return <SkeletonEditBook />;
+  if (!currentBook) return null;
 
   return (
-    <div className="flex justify-center p-4 md:p-6 lg:p-8">
-      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto">
-        <div className="bg-white rounded-xl p-6 shadow-md w-full lg:w-1/3 flex flex-col">
+    <div className="flex justify-center p-4 md:p-6 lg:p-8 min-h-[800px]">
+      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto items-stretch">
+        {/* --- LEFT COLUMN (Static Info & Tabs) --- */}
+        <div className="bg-white rounded-xl p-6 w-full lg:w-1/3 shadow-md flex flex-col h-full">
           <div className="flex flex-col items-center gap-4 flex-1">
+            {/* Book Cover Preview (Static) */}
             <div className="flex flex-col items-center gap-2 mt-5 relative">
-              <Label htmlFor="picture" className="cursor-pointer">
-                <div className="w-24 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative hover:border-indigo-500 transition-colors">
-                  <img
-                    src={preview || picture || "https. ..."}
-                    alt="Preview"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              </Label>
-              <Input
-                id="picture"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <div className="absolute bg-white p-1 rounded-full shadow mt-24 ml-15">
-                <SquarePen className="text-primary-color w-4 h-4" />
+              <div className="w-32 h-48 rounded-lg border-2 border-transparent flex items-center justify-center overflow-hidden relative shadow-sm">
+                <img
+                  src={preview || currentBook.picture}
+                  alt="Book Cover"
+                  className="object-cover w-full h-full"
+                />
               </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-center">{name}</h2>
-            <p className="text-sm text-muted-foreground">{createdAt}</p>
+            <h2 className="text-lg font-semibold text-center px-2">
+              {currentBook.name}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {currentBook.createdAt}
+            </p>
 
+            {/* Navigation Tabs */}
             <div className="w-full mt-4">
               <button
                 onClick={() => setSelectedMenu("details")}
-                className={`w-full h-13 py-2 text-left px-4 rounded-4xl mb-8 mt-5 flex gap-2 items-center cursor-pointer ${
-                  selectedMenu === "details"
-                    ? "bg-violet-100 text-primary-color font-semibold"
-                    : "hover:bg-gray-100"
+                disabled={isEditing}
+                className={`w-full h-13 py-2 text-left px-4 rounded-4xl mb-8 mt-5 flex gap-2 items-center transition-all duration-200 ${
+                  isEditing
+                    ? "opacity-40 cursor-not-allowed text-gray-400"
+                    : selectedMenu === "details"
+                    ? "bg-violet-100 text-primary-color font-semibold cursor-default"
+                    : "hover:bg-gray-100 cursor-pointer"
                 }`}
               >
-                <Book /> Book Details
+                <Book className={isEditing ? "text-gray-400" : ""} /> Book
+                Details
               </button>
               <button
                 onClick={() => setSelectedMenu("seller")}
-                className={`w-full h-13 py-2 text-left px-4 rounded-4xl flex gap-2 items-center cursor-pointer ${
-                  selectedMenu === "seller"
-                    ? "bg-violet-100 text-primary-color font-semibold"
-                    : "hover:bg-gray-100"
+                disabled={isEditing}
+                className={`w-full h-13 py-2 text-left px-4 rounded-4xl flex gap-2 items-center transition-all duration-200 ${
+                  isEditing
+                    ? "opacity-40 cursor-not-allowed text-gray-400"
+                    : selectedMenu === "seller"
+                    ? "bg-violet-100 text-primary-color font-semibold cursor-default"
+                    : "hover:bg-gray-100 cursor-pointer"
                 }`}
               >
-                <User /> Sold by...
+                <User className={isEditing ? "text-gray-400" : ""} /> Sold by...
               </button>
             </div>
           </div>
 
           <div className="w-full mt-8">
-            <DialogConfirmDeleteBook onConfirm={handleDeleteBook} book={book} />
+            {isEditing && (
+              <DialogConfirmDeleteBook
+                onConfirm={handleDeleteBook}
+                book={currentBook}
+              />
+            )}
           </div>
         </div>
 
-        <div className="grid bg-white rounded-xl p-6 shadow-md w-full lg:w-2/3">
+        {/* --- RIGHT COLUMN (Form & Content) --- */}
+        <div className="grid bg-white rounded-xl p-6 w-full lg:w-2/3 shadow-md h-full">
+          {/* TAB 1: DETAILS (Edit Form) */}
           <div
             className={`col-start-1 row-start-1 transition-opacity ${
               selectedMenu === "details" ? "opacity-100" : "opacity-0 invisible"
-            }`}
+            } flex flex-col`}
           >
-            <div>
+            <div className="flex-1">
               <div className="flex justify-between">
                 <h1 className="text-2xl font-semibold mb-4">Book details</h1>
-                <p className="text-sm mt-1">Book ID: {book.id}</p>
+                <p className="text-sm font-md mt-1">
+                  Book ID: {currentBook.id}
+                </p>
+              </div>
+
+              {/* Image Upload (Only visible when editing) */}
+              {isEditing && (
+                <div className="flex flex-col items-center justify-center mb-6 animate-in fade-in zoom-in duration-300">
+                  <Label
+                    htmlFor="picture-upload"
+                    className="cursor-pointer group relative"
+                  >
+                    <div className="w-32 h-48 rounded-lg border-2 border-dashed border-indigo-300 hover:border-indigo-500 flex items-center justify-center overflow-hidden relative transition-colors bg-gray-50">
+                      <img
+                        src={preview || currentPicture}
+                        alt="Preview"
+                        className="object-cover w-full h-full opacity-60 group-hover:opacity-40 transition-opacity"
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-indigo-600">
+                        <Upload className="w-6 h-6 mb-1" />
+                        <span className="text-xs font-semibold">
+                          Change Cover
+                        </span>
+                      </div>
+                    </div>
+                  </Label>
+                  <Input
+                    id="picture-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </div>
+              )}
+
+              {/* Form Fields */}
+              <div className="mb-4">
+                <Label className="block mb-1 mt-2 font-medium text-gray-700">
+                  Name
+                </Label>
+                <Input
+                  {...register("name")}
+                  disabled={!isEditing}
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600"
+                />
               </div>
 
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-4 font-medium text-gray-700">
                   Description
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 h-24 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                </Label>
+                <Textarea
+                  {...register("description")}
+                  disabled={!isEditing}
+                  placeholder="Enter book description..."
+                  className="resize-none h-32 border-gray-300 rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600"
                 />
               </div>
+
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-4 font-medium text-gray-700">
                   Buy URL
-                </label>
-                <input
-                  type="text"
-                  value={buyUrl}
-                  onChange={(e) => setBuyUrl(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500"
+                </Label>
+                <Input
+                  {...register("buyUrl")}
+                  disabled={!isEditing}
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600"
                 />
               </div>
+
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-4 font-medium text-gray-700">
                   Seller
-                </label>
+                </Label>
                 <Select
-                  value={sellerId}
-                  onValueChange={(value) => setSellerId(value)}
+                  disabled={!isEditing}
+                  value={watchedSellerId}
+                  onValueChange={(val) =>
+                    setValue("sellerId", val, { shouldDirty: true })
+                  }
                 >
-                  <SelectTrigger className="w-full border border-gray-300 rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500">
-                    {selectedSeller ? (
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={selectedSeller.avatar}
-                            alt={selectedSeller.name}
-                            className="w-7 h-7 rounded-full"
-                          />
-                          <span className="text-sm font-medium">
-                            {selectedSeller.name}
-                          </span>
-                        </div>
-                        <span className="text-md text-gray-500">
-                          ID: {selectedSeller.id}
-                        </span>
-                      </div>
-                    ) : (
-                      <SelectValue placeholder="Select a seller..." />
-                    )}
+                  {/* Aggiunto focus:ring-indigo-600 qui sotto */}
+                  <SelectTrigger className="w-full border border-gray-300 rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                    <SelectValue placeholder="Select a seller..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {users.map((u) => (
+                    {/* Aggiungi ': userType' qui sotto */}
+                    {users.map((u: userType) => (
                       <SelectItem key={u.id} value={u.id}>
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={u.avatar}
-                              alt={u.name}
-                              className="w-6 h-6 rounded-full object-cover"
-                            />
-                            <span className="text-md font-medium text-gray-800">
-                              {u.name}
-                            </span>
-                          </div>
-                          <span className="text-md text-gray-500">
-                            ID: {u.id}
-                          </span>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={u.avatar}
+                            alt={u.name}
+                            className="w-6 h-6 rounded-full object-cover"
+                          />
+                          <span>{u.name}</span>
                         </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+
               <div className="mb-4">
-                <label className="block mb-1 mt-10 font-medium text-gray-700">
+                <Label className="block mb-1 mt-4 font-medium text-gray-700">
                   Created at
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   disabled
-                  value={createdAt}
+                  value={currentBook.createdAt}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-400 cursor-not-allowed"
                 />
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
+            {/* Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+              {isEditing ? (
+                <>
+                  <DialogConfirmDeleteChanges onConfirm={handleCancelChanges} />
+                  <Button
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={updateBookMutation.isPending || !isDirty}
+                    className={`bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer ${
+                      !isDirty || updateBookMutation.isPending
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    {updateBookMutation.isPending ? "Saving..." : "Save"}
+                  </Button>
+                </>
+              ) : (
                 <Button
-                  onClick={handleSave}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer"
+                  onClick={() => setIsEditing(true)}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl px-4 py-2 cursor-pointer md:col-span-2 flex items-center justify-center gap-2"
                 >
-                  Save
+                  <Pencil className="w-4 h-4" />
+                  Edit Book
                 </Button>
-              </div>
+              )}
             </div>
           </div>
 
+          {/* TAB 2: SELLER INFO */}
           <div
             className={`col-start-1 row-start-1 transition-opacity ${
               selectedMenu === "seller" ? "opacity-100" : "opacity-0 invisible"
@@ -320,15 +394,20 @@ export default function EditBook() {
           >
             <div>
               <h1 className="text-2xl font-semibold mb-4">Sold by</h1>
-              {selectedSeller ? (
+              {currentSeller ? (
                 <div className="flex justify-center pt-8">
-                  <CardUser user={selectedSeller} />
+                  {/* Assicurati che CardUser accetti le props corrette */}
+                  <CardUser user={currentSeller} />
                 </div>
               ) : (
-                <p className="text-gray-500 mt-4">
-                  No seller is assigned to this book. You can assign one in the
-                  "Book Details" tab.
-                </p>
+                <div className="text-center mt-10 p-8 border-2 border-dashed rounded-xl bg-gray-50">
+                  <p className="text-gray-500">
+                    No seller is assigned to this book.
+                  </p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Go to "Book Details" and click "Edit Book" to assign one.
+                  </p>
+                </div>
               )}
             </div>
           </div>
