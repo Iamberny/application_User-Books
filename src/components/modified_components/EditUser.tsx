@@ -2,8 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { User, Book, Pencil, Upload } from "lucide-react";
-import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +21,7 @@ import {
   showUserEditToast,
   showUserDeleteToast,
   showUserErrorToast,
+  showUserErrorToastUpdate,
 } from "./SonnerBookUser";
 
 export default function EditUser() {
@@ -32,6 +31,7 @@ export default function EditUser() {
   const [selectedMenu, setSelectedMenu] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const today = new Date().toLocaleDateString("en-CA");
 
   const { data: users = [], isLoading: usersLoading } = useUsers();
   const { data: books = [], isLoading: booksLoading } = useBooks();
@@ -102,7 +102,7 @@ export default function EditUser() {
         },
         onError: (err) => {
           console.error(err);
-          toast.error("Error updating user");
+          showUserErrorToastUpdate();
         },
       }
     );
@@ -136,7 +136,7 @@ export default function EditUser() {
         <div className="bg-white rounded-xl p-6 w-full lg:w-1/3 shadow-md flex flex-col h-full">
           <div className="flex flex-col items-center gap-4 flex-1">
             <div className="flex flex-col items-center gap-2 mt-5 relative">
-              <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative">
+              <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative shadow-sm">
                 <img
                   src={preview || currentUser.avatar}
                   alt="Avatar"
@@ -148,9 +148,6 @@ export default function EditUser() {
             <h2 className="text-lg font-semibold text-center">
               {currentUser.name}
             </h2>
-            <p className="text-sm text-muted-foreground">
-              {currentUser.createdAt}
-            </p>
 
             <div className="w-full mt-4">
               <button
@@ -243,7 +240,7 @@ export default function EditUser() {
                 <Input
                   {...register("name")}
                   disabled={!isEditing}
-                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600"
                 />
               </div>
 
@@ -253,23 +250,29 @@ export default function EditUser() {
                 </Label>
                 <Input
                   type="date"
+                  max={today}
                   {...register("birthdate")}
                   disabled={!isEditing}
-                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed"
+                  className="w-full border-gray-300 rounded-xl px-3 py-2 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600"
                 />
               </div>
 
-              <div className="mb-4">
-                <Label className="block mb-1 mt-10 font-medium text-gray-700">
-                  Created at
-                </Label>
-                <Input
-                  type="text"
-                  disabled
-                  value={currentUser.createdAt}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none text-gray-400 cursor-not-allowed"
-                />
-              </div>
+              <Input
+                type="text"
+                disabled
+                value={
+                  currentUser.createdAt
+                    ? new Date(currentUser.createdAt).toLocaleString("it-IT", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : ""
+                }
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none text-gray-400 cursor-not-allowed"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">

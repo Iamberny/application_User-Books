@@ -2,13 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Book, User, Pencil, Upload } from "lucide-react";
-import { toast } from "sonner";
-
-// UI Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"; // Assumo tu abbia questo componente in shadcn, altrimenti usa <textarea className="...input-styles" />
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -17,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Custom Components
 import { CardUser } from "@/components/modified_components/CardUser";
 import {
   DialogConfirmDeleteChanges,
@@ -25,37 +21,32 @@ import {
 } from "@/components/modified_components/DialogConfirm";
 import { SkeletonEditUser as SkeletonEditBook } from "./SkeletonBookUser";
 
-// Hooks & Types
 import { useBooks, useUpdateBook, useDeleteBook } from "@/hooks/useBooks";
-import { useUsers } from "@/hooks/useUsers"; // Serve per la lista dei venditori
+import { useUsers } from "@/hooks/useUsers";
 import { bookType, UpdateBookPayLoad } from "@/types/bookType";
 import { userType } from "@/types/userType";
 
-// Toasts
 import {
   showBookEditToast,
   showBookDeleteToast,
   showBookErrorToast,
+  showBookErrorToastUpdate,
 } from "./SonnerBookUser";
 
 export default function EditBook() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // UI States
   const [selectedMenu, setSelectedMenu] = useState("details");
   const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
-  // Data Fetching (TanStack Query)
   const { data: books = [], isLoading: booksLoading } = useBooks();
   const { data: users = [], isLoading: usersLoading } = useUsers();
 
-  // Mutations
   const updateBookMutation = useUpdateBook();
   const deleteBookMutation = useDeleteBook();
 
-  // Derived State
   const currentBook = useMemo(() => {
     return books.find((b: bookType) => b.id === id);
   }, [books, id]);
@@ -65,7 +56,6 @@ export default function EditBook() {
     return users.find((u: userType) => u.id === currentBook.sellerId);
   }, [users, currentBook]);
 
-  // React Hook Form Setup
   const {
     register,
     handleSubmit,
@@ -86,14 +76,12 @@ export default function EditBook() {
   const currentPicture = watch("picture");
   const watchedSellerId = watch("sellerId");
 
-  // Redirect if not found
   useEffect(() => {
     if (!booksLoading && !currentBook && id) {
       navigate("/");
     }
   }, [booksLoading, currentBook, id, navigate]);
 
-  // Sync Form with Data
   useEffect(() => {
     if (currentBook) {
       reset({
@@ -107,7 +95,6 @@ export default function EditBook() {
     }
   }, [currentBook, reset]);
 
-  // Handlers
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -134,7 +121,7 @@ export default function EditBook() {
         },
         onError: (err) => {
           console.error(err);
-          toast.error("Error updating book");
+          showBookErrorToastUpdate();
         },
       }
     );
@@ -159,17 +146,14 @@ export default function EditBook() {
     setIsEditing(false);
   };
 
-  // Loading States
   if (booksLoading || usersLoading) return <SkeletonEditBook />;
   if (!currentBook) return null;
 
   return (
     <div className="flex justify-center p-4 md:p-6 lg:p-8 min-h-[800px]">
       <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto items-stretch">
-        {/* --- LEFT COLUMN (Static Info & Tabs) --- */}
         <div className="bg-white rounded-xl p-6 w-full lg:w-1/3 shadow-md flex flex-col h-full">
           <div className="flex flex-col items-center gap-4 flex-1">
-            {/* Book Cover Preview (Static) */}
             <div className="flex flex-col items-center gap-2 mt-5 relative">
               <div className="w-32 h-48 rounded-lg border-2 border-transparent flex items-center justify-center overflow-hidden relative shadow-sm">
                 <img
@@ -183,11 +167,7 @@ export default function EditBook() {
             <h2 className="text-lg font-semibold text-center px-2">
               {currentBook.name}
             </h2>
-            <p className="text-sm text-muted-foreground">
-              {currentBook.createdAt}
-            </p>
 
-            {/* Navigation Tabs */}
             <div className="w-full mt-4">
               <button
                 onClick={() => setSelectedMenu("details")}
@@ -229,9 +209,7 @@ export default function EditBook() {
           </div>
         </div>
 
-        {/* --- RIGHT COLUMN (Form & Content) --- */}
         <div className="grid bg-white rounded-xl p-6 w-full lg:w-2/3 shadow-md h-full">
-          {/* TAB 1: DETAILS (Edit Form) */}
           <div
             className={`col-start-1 row-start-1 transition-opacity ${
               selectedMenu === "details" ? "opacity-100" : "opacity-0 invisible"
@@ -245,7 +223,6 @@ export default function EditBook() {
                 </p>
               </div>
 
-              {/* Image Upload (Only visible when editing) */}
               {isEditing && (
                 <div className="flex flex-col items-center justify-center mb-6 animate-in fade-in zoom-in duration-300">
                   <Label
@@ -276,7 +253,6 @@ export default function EditBook() {
                 </div>
               )}
 
-              {/* Form Fields */}
               <div className="mb-4">
                 <Label className="block mb-1 mt-2 font-medium text-gray-700">
                   Name
@@ -322,12 +298,10 @@ export default function EditBook() {
                     setValue("sellerId", val, { shouldDirty: true })
                   }
                 >
-                  {/* Aggiunto focus:ring-indigo-600 qui sotto */}
                   <SelectTrigger className="w-full border border-gray-300 rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
                     <SelectValue placeholder="Select a seller..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {/* Aggiungi ': userType' qui sotto */}
                     {users.map((u: userType) => (
                       <SelectItem key={u.id} value={u.id}>
                         <div className="flex items-center gap-2">
@@ -344,20 +318,24 @@ export default function EditBook() {
                 </Select>
               </div>
 
-              <div className="mb-4">
-                <Label className="block mb-1 mt-4 font-medium text-gray-700">
-                  Created at
-                </Label>
-                <Input
-                  type="text"
-                  disabled
-                  value={currentBook.createdAt}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-400 cursor-not-allowed"
-                />
-              </div>
+              <Input
+                type="text"
+                disabled
+                value={
+                  currentBook.createdAt
+                    ? new Date(currentBook.createdAt).toLocaleString("it-IT", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : ""
+                }
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none text-gray-400 cursor-not-allowed"
+              />
             </div>
 
-            {/* Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
               {isEditing ? (
                 <>
@@ -386,7 +364,6 @@ export default function EditBook() {
             </div>
           </div>
 
-          {/* TAB 2: SELLER INFO */}
           <div
             className={`col-start-1 row-start-1 transition-opacity ${
               selectedMenu === "seller" ? "opacity-100" : "opacity-0 invisible"
@@ -396,7 +373,6 @@ export default function EditBook() {
               <h1 className="text-2xl font-semibold mb-4">Sold by</h1>
               {currentSeller ? (
                 <div className="flex justify-center pt-8">
-                  {/* Assicurati che CardUser accetti le props corrette */}
                   <CardUser user={currentSeller} />
                 </div>
               ) : (

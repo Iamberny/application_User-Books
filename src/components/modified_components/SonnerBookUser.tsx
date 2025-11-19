@@ -159,3 +159,43 @@ export const showBookErrorToast = () => {
     },
   });
 };
+
+export const showBookErrorToastUpdate = () => {
+  const now = new Date();
+  const formattedDate = now.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  toast("Failed to update book", {
+    description: formattedDate,
+    action: {
+      label: "Undo",
+      onClick: () => console.log("Undo"),
+    },
+  });
+};
+
+export const showUserErrorToastUpdate = () => {
+  const now = new Date();
+  const formattedDate = now.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  toast("Failed to update user", {
+    description: formattedDate,
+    action: {
+      label: "Undo",
+      onClick: () => console.log("Undo"),
+    },
+  });
+};
