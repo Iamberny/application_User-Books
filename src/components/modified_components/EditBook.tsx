@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Book, User, Pencil, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,6 @@ export default function EditBook() {
 
   const [selectedMenu, setSelectedMenu] = useState("details");
   const [isEditing, setIsEditing] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
 
   const { data: books = [], isLoading: booksLoading } = useBooks();
   const { data: users = [], isLoading: usersLoading } = useUsers();
@@ -59,41 +58,28 @@ export default function EditBook() {
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     watch,
+    reset,
     formState: { isDirty },
   } = useForm<UpdateBookPayLoad>({
-    defaultValues: {
-      name: "",
-      description: "",
-      buyUrl: "",
-      picture: "",
-      sellerId: "",
-    },
+    values: currentBook
+      ? {
+          name: currentBook.name,
+          description: currentBook.description,
+          buyUrl: currentBook.buyUrl,
+          picture: currentBook.picture,
+          sellerId: currentBook.sellerId,
+        }
+      : undefined,
   });
 
   const currentPicture = watch("picture");
   const watchedSellerId = watch("sellerId");
 
-  useEffect(() => {
-    if (!booksLoading && !currentBook && id) {
-      navigate("/");
-    }
-  }, [booksLoading, currentBook, id, navigate]);
+  if (booksLoading || usersLoading) return <SkeletonEditBook />;
 
-  useEffect(() => {
-    if (currentBook) {
-      reset({
-        name: currentBook.name,
-        description: currentBook.description,
-        buyUrl: currentBook.buyUrl,
-        picture: currentBook.picture,
-        sellerId: currentBook.sellerId,
-      });
-      setPreview(null);
-    }
-  }, [currentBook, reset]);
+  if (!currentBook) return <Navigate to="/" replace />;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,7 +87,7 @@ export default function EditBook() {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        setPreview(result);
+
         setValue("picture", result, { shouldDirty: true });
       };
       reader.readAsDataURL(file);
@@ -109,15 +95,12 @@ export default function EditBook() {
   };
 
   const onSubmit = (data: UpdateBookPayLoad) => {
-    if (!currentBook) return;
-
     updateBookMutation.mutate(
       { id: currentBook.id, data },
       {
         onSuccess: () => {
           showBookEditToast();
           setIsEditing(false);
-          setPreview(null);
         },
         onError: (err) => {
           console.error(err);
@@ -128,7 +111,6 @@ export default function EditBook() {
   };
 
   const handleDeleteBook = () => {
-    if (!currentBook) return;
     deleteBookMutation.mutate(currentBook.id, {
       onSuccess: () => {
         showBookDeleteToast();
@@ -142,12 +124,8 @@ export default function EditBook() {
 
   const handleCancelChanges = () => {
     reset();
-    setPreview(null);
     setIsEditing(false);
   };
-
-  if (booksLoading || usersLoading) return <SkeletonEditBook />;
-  if (!currentBook) return null;
 
   return (
     <div className="flex justify-center p-4 md:p-6 lg:p-8 min-h-[800px]">
@@ -157,7 +135,7 @@ export default function EditBook() {
             <div className="flex flex-col items-center gap-2 mt-5 relative">
               <div className="w-32 h-48 rounded-lg border-2 border-transparent flex items-center justify-center overflow-hidden relative shadow-sm">
                 <img
-                  src={preview || currentBook.picture}
+                  src={currentPicture || currentBook.picture}
                   alt="Book Cover"
                   className="object-cover w-full h-full"
                 />
@@ -231,7 +209,7 @@ export default function EditBook() {
                   >
                     <div className="w-32 h-48 rounded-lg border-2 border-dashed border-indigo-300 hover:border-indigo-500 flex items-center justify-center overflow-hidden relative transition-colors bg-gray-50">
                       <img
-                        src={preview || currentPicture}
+                        src={currentPicture}
                         alt="Preview"
                         className="object-cover w-full h-full opacity-60 group-hover:opacity-40 transition-opacity"
                       />

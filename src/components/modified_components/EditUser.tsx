@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { User, Book, Pencil, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,6 @@ export default function EditUser() {
 
   const [selectedMenu, setSelectedMenu] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
   const today = new Date().toLocaleDateString("en-CA");
 
   const { data: users = [], isLoading: usersLoading } = useUsers();
@@ -43,6 +42,13 @@ export default function EditUser() {
     return users.find((u: userType) => u.id === id);
   }, [users, id]);
 
+  const soldBooks = useMemo(() => {
+    if (!currentUser || !books.length) return [];
+    return books.filter(
+      (b: bookType) => String(b.sellerId) === String(currentUser.id)
+    );
+  }, [books, currentUser]);
+
   const {
     register,
     handleSubmit,
@@ -51,31 +57,20 @@ export default function EditUser() {
     watch,
     formState: { isDirty },
   } = useForm<UpdateUserPayLoad>({
-    defaultValues: {
-      name: "",
-      birthdate: "",
-      avatar: "",
-    },
+    values: currentUser
+      ? {
+          name: currentUser.name,
+          birthdate: currentUser.birthdate,
+          avatar: currentUser.avatar,
+        }
+      : undefined,
   });
 
   const currentAvatar = watch("avatar");
 
-  useEffect(() => {
-    if (!usersLoading && !currentUser && id) {
-      navigate("/");
-    }
-  }, [usersLoading, currentUser, id, navigate]);
+  if (usersLoading) return <SkeletonEditUser />;
 
-  useEffect(() => {
-    if (currentUser) {
-      reset({
-        name: currentUser.name,
-        birthdate: currentUser.birthdate,
-        avatar: currentUser.avatar,
-      });
-      setPreview(null);
-    }
-  }, [currentUser, reset]);
+  if (!currentUser) return <Navigate to="/" replace />;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,7 +78,6 @@ export default function EditUser() {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        setPreview(result);
         setValue("avatar", result, { shouldDirty: true });
       };
       reader.readAsDataURL(file);
@@ -91,14 +85,12 @@ export default function EditUser() {
   };
 
   const onSubmit = (data: UpdateUserPayLoad) => {
-    if (!currentUser) return;
     updateUserMutation.mutate(
       { id: currentUser.id, data },
       {
         onSuccess: () => {
           showUserEditToast();
           setIsEditing(false);
-          setPreview(null);
         },
         onError: (err) => {
           console.error(err);
@@ -109,7 +101,6 @@ export default function EditUser() {
   };
 
   const handleDeleteUser = () => {
-    if (!currentUser) return;
     deleteUserMutation.mutate(currentUser.id, {
       onSuccess: () => {
         showUserDeleteToast();
@@ -123,12 +114,8 @@ export default function EditUser() {
 
   const handleCancelChanges = () => {
     reset();
-    setPreview(null);
     setIsEditing(false);
   };
-
-  if (usersLoading) return <SkeletonEditUser />;
-  if (!currentUser) return null;
 
   return (
     <div className="flex justify-center p-4 md:p-6 lg:p-8 min-h-[800px]">
@@ -138,7 +125,7 @@ export default function EditUser() {
             <div className="flex flex-col items-center gap-2 mt-5 relative">
               <div className="w-24 h-24 rounded-full border-2 border-transparent flex items-center justify-center overflow-hidden relative shadow-sm">
                 <img
-                  src={preview || currentUser.avatar}
+                  src={currentAvatar || currentUser.avatar}
                   alt="Avatar"
                   className="object-cover w-full h-full"
                 />
@@ -213,7 +200,7 @@ export default function EditUser() {
                   >
                     <div className="w-28 h-28 rounded-full border-2 border-dashed border-indigo-300 hover:border-indigo-500 flex items-center justify-center overflow-hidden relative transition-colors bg-gray-50">
                       <img
-                        src={preview || currentAvatar}
+                        src={currentAvatar}
                         alt="Preview"
                         className="object-cover w-full h-full opacity-60 group-hover:opacity-40 transition-opacity"
                       />
@@ -310,29 +297,25 @@ export default function EditUser() {
           >
             <div className="flex-1">
               <h1 className="text-2xl font-semibold mb-4">Books sold</h1>
+
               {booksLoading ? (
                 <div className="flex flex-wrap justify-center mt-6 gap-6 mb-5">
                   {Array.from({ length: 6 }).map((_, idx) => (
                     <SkeletonBookCard key={idx} />
                   ))}
                 </div>
+              ) : soldBooks.length > 0 ? (
+                <div className="flex flex-wrap justify-center mt-6 gap-6 mb-5">
+                  {soldBooks.map((book: bookType) => (
+                    <CardBook key={book.id} book={book} />
+                  ))}
+                </div>
               ) : (
-                (() => {
-                  const soldBooks = books.filter(
-                    (b: bookType) =>
-                      String(b.sellerId) === String(currentUser.id)
-                  );
-                  if (soldBooks.length === 0) {
-                    return <p className="text-gray-500">No books sold.</p>;
-                  }
-                  return (
-                    <div className="flex flex-wrap justify-center mt-6 gap-6 mb-5">
-                      {soldBooks.map((book: bookType) => (
-                        <CardBook key={book.id} book={book} />
-                      ))}
-                    </div>
-                  );
-                })()
+                <div className="text-center mt-10 p-8 border-2 border-dashed rounded-xl bg-gray-50">
+                  <p className="text-gray-500">
+                    This user has not sold any books yet.
+                  </p>
+                </div>
               )}
             </div>
           </div>
